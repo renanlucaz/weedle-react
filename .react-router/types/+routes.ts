@@ -13,15 +13,33 @@ type Pages = {
   "/": {
     params: {};
   };
+  "/clusters": {
+    params: {};
+  };
+  "/simular-leads": {
+    params: {};
+  };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
+    page: "/" | "/clusters" | "/simular-leads";
+  };
+  "components/Layout.tsx": {
+    id: "components/Layout";
+    page: "/" | "/clusters" | "/simular-leads";
+  };
+  "routes/dashboard.tsx": {
+    id: "routes/dashboard";
     page: "/";
   };
-  "routes/home.tsx": {
-    id: "routes/home";
-    page: "/";
+  "routes/clusters.tsx": {
+    id: "routes/clusters";
+    page: "/clusters";
+  };
+  "routes/simular-leads.tsx": {
+    id: "routes/simular-leads";
+    page: "/simular-leads";
   };
 };
