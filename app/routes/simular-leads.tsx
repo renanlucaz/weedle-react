@@ -9,7 +9,7 @@ export function meta({ }: Route.MetaArgs) {
 
 export default function SimularLeads() {
     return (
-        <div className="space-y-6">
+        <div className="p-8 space-y-6">
             {/* Header */}
             <div className="border-b border-gray-200 pb-4">
                 <h1 className="text-2xl font-bold text-gray-900">Simular Leads</h1>

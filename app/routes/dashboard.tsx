@@ -9,7 +9,7 @@ export function meta({ }: Route.MetaArgs) {
 
 export default function Dashboard() {
     return (
-        <div className="space-y-6">
+        <div className="p-8 space-y-6">
             {/* Header */}
             <div className="border-b border-gray-200 pb-4">
                 <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
@@ -18,22 +18,15 @@ export default function Dashboard() {
                 </p>
             </div>
 
-            {/* Stats Cards */}
+            {/* Stats Cards - Top Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="bg-white overflow-hidden shadow rounded-lg">
-                    <div className="p-5">
+                    <div className="py-5">
                         <div className="flex items-center">
-                            <div className="flex-shrink-0">
-                                <div className="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
-                                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                                    </svg>
-                                </div>
-                            </div>
                             <div className="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt className="text-sm font-medium text-gray-500 truncate">Total de Leads</dt>
-                                    <dd className="text-lg font-medium text-gray-900">2,84722</dd>
+                                    <dt className="text-sm font-medium text-gray-500 truncate">Total de clientes</dt>
+                                    <dd className="text-2xl font-bold text-purple-600">10.412</dd>
                                 </dl>
                             </div>
                         </div>
@@ -41,19 +34,12 @@ export default function Dashboard() {
                 </div>
 
                 <div className="bg-white overflow-hidden shadow rounded-lg">
-                    <div className="p-5">
+                    <div className="py-5">
                         <div className="flex items-center">
-                            <div className="flex-shrink-0">
-                                <div className="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
-                                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                            </div>
                             <div className="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt className="text-sm font-medium text-gray-500 truncate">Leads Convertidos</dt>
-                                    <dd className="text-lg font-medium text-gray-900">1,234</dd>
+                                    <dt className="text-sm font-medium text-gray-500 truncate">Receita média</dt>
+                                    <dd className="text-2xl font-bold text-purple-600">R$12.020</dd>
                                 </dl>
                             </div>
                         </div>
@@ -61,19 +47,12 @@ export default function Dashboard() {
                 </div>
 
                 <div className="bg-white overflow-hidden shadow rounded-lg">
-                    <div className="p-5">
+                    <div className="py-5">
                         <div className="flex items-center">
-                            <div className="flex-shrink-0">
-                                <div className="w-8 h-8 bg-yellow-500 rounded-md flex items-center justify-center">
-                                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                    </svg>
-                                </div>
-                            </div>
                             <div className="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt className="text-sm font-medium text-gray-500 truncate">Taxa de Conversão</dt>
-                                    <dd className="text-lg font-medium text-gray-900">43.3%</dd>
+                                    <dt className="text-sm font-medium text-gray-500 truncate">Clientes ativos</dt>
+                                    <dd className="text-2xl font-bold text-purple-600">5.369</dd>
                                 </dl>
                             </div>
                         </div>
@@ -81,19 +60,12 @@ export default function Dashboard() {
                 </div>
 
                 <div className="bg-white overflow-hidden shadow rounded-lg">
-                    <div className="p-5">
+                    <div className="py-5">
                         <div className="flex items-center">
-                            <div className="flex-shrink-0">
-                                <div className="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
-                                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                    </svg>
-                                </div>
-                            </div>
                             <div className="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt className="text-sm font-medium text-gray-500 truncate">Clusters Ativos</dt>
-                                    <dd className="text-lg font-medium text-gray-900">12</dd>
+                                    <dt className="text-sm font-medium text-gray-500 truncate">NPS</dt>
+                                    <dd className="text-2xl font-bold text-purple-600">95</dd>
                                 </dl>
                             </div>
                         </div>
@@ -101,72 +73,153 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            {/* Charts Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white shadow rounded-lg p-6">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Leads por Mês</h3>
-                    <div className="h-64 bg-gray-100 rounded flex items-center justify-center">
-                        <p className="text-gray-500">Gráfico de leads por mês</p>
-                    </div>
-                </div>
-
-                <div className="bg-white shadow rounded-lg p-6">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Performance por Cluster</h3>
-                    <div className="h-64 bg-gray-100 rounded flex items-center justify-center">
-                        <p className="text-gray-500">Gráfico de performance por cluster</p>
-                    </div>
-                </div>
-            </div>
-
-            {/* Recent Activity */}
+            {/* Segmentações Table - Middle Section */}
             <div className="bg-white shadow rounded-lg">
                 <div className="px-6 py-4 border-b border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900">Atividade Recente</h3>
+                    <h3 className="text-lg font-medium text-gray-900">Segmentações</h3>
                 </div>
-                <div className="divide-y divide-gray-200">
-                    <div className="px-6 py-4">
-                        <div className="flex items-center space-x-3">
-                            <div className="flex-shrink-0">
-                                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                    <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-gray-900">Novo lead adicionado ao cluster A</p>
-                                <p className="text-sm text-gray-500">Há 2 horas</p>
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NPS</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Renda estimada</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Canal mais utilizado</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Última compra</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Clientes leais</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">92</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$12.412,00</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Portal TOTVS</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12/12/14</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-purple-600">
+                                    <a href="#" className="hover:text-purple-800">Ver detalhes</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Risco de churn</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">92</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$12.412,00</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Portal TOTVS</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12/12/14</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-purple-600">
+                                    <a href="#" className="hover:text-purple-800">Ver detalhes</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Novas oportunidade</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">92</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$12.412,00</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Portal TOTVS</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12/12/14</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-purple-600">
+                                    <a href="#" className="hover:text-purple-800">Ver detalhes</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Baixo rendimento</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">92</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$12.412,00</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Portal TOTVS</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12/12/14</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-purple-600">
+                                    <a href="#" className="hover:text-purple-800">Ver detalhes</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* Charts Section - Bottom Section - 2x2 Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Top-Left Chart - Horizontal Bar Chart */}
+                <div className="bg-white shadow rounded-lg p-6">
+                    <h3 className="text-lg font-medium text-gray-900 mb-4">Receita média por cluster</h3>
+                    <div className="h-64 bg-gray-100 rounded flex items-center justify-center">
+                        <div className="w-full h-full p-4">
+                            <div className="flex flex-col space-y-2 h-full justify-center">
+                                {['January', 'February', 'March', 'April', 'May', 'June', 'July'].map((month, index) => (
+                                    <div key={month} className="flex items-center space-x-2">
+                                        <span className="text-xs text-gray-600 w-16">{month}</span>
+                                        <div className="flex-1 flex">
+                                            <div className="bg-green-300 h-4 rounded-l" style={{ width: `${Math.abs(index - 3) * 15}%` }}></div>
+                                            <div className="bg-purple-300 h-4 rounded-r" style={{ width: `${(index + 1) * 10}%` }}></div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
-                    <div className="px-6 py-4">
-                        <div className="flex items-center space-x-3">
-                            <div className="flex-shrink-0">
-                                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                                    <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-gray-900">Lead convertido no cluster B</p>
-                                <p className="text-sm text-gray-500">Há 4 horas</p>
+                </div>
+
+                {/* Top-Right Chart - Vertical Bar Chart */}
+                <div className="bg-white shadow rounded-lg p-6">
+                    <h3 className="text-lg font-medium text-gray-900 mb-4">Receita média por cluster</h3>
+                    <div className="h-64 bg-gray-100 rounded flex items-center justify-center">
+                        <div className="w-full h-full p-4">
+                            <div className="flex items-end justify-between h-full space-x-2">
+                                {['January', 'February', 'March', 'April', 'May', 'June', 'July'].map((month, index) => (
+                                    <div key={month} className="flex flex-col items-center space-y-1">
+                                        <div className="flex space-x-1">
+                                            <div className="bg-purple-400 w-3 rounded-t" style={{ height: `${30 + index * 8}%` }}></div>
+                                            <div className="bg-green-400 w-3 rounded-t" style={{ height: `${40 + index * 6}%` }}></div>
+                                        </div>
+                                        <span className="text-xs text-gray-600 rotate-45 origin-left">{month}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
-                    <div className="px-6 py-4">
-                        <div className="flex items-center space-x-3">
-                            <div className="flex-shrink-0">
-                                <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
-                                    <svg className="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-gray-900">Cluster C otimizado</p>
-                                <p className="text-sm text-gray-500">Há 6 horas</p>
-                            </div>
+                </div>
+
+                {/* Bottom-Left Chart - Line Chart */}
+                <div className="bg-white shadow rounded-lg p-6">
+                    <h3 className="text-lg font-medium text-gray-900 mb-4">Receita média por cluster</h3>
+                    <div className="h-64 bg-gray-100 rounded flex items-center justify-center">
+                        <div className="w-full h-full p-4">
+                            <svg className="w-full h-full" viewBox="0 0 100 100">
+                                <polyline
+                                    fill="none"
+                                    stroke="#8b5cf6"
+                                    strokeWidth="2"
+                                    points="10,50 20,30 30,70 40,20 50,80 60,40 70,60 80,10 90,90"
+                                />
+                                <polyline
+                                    fill="none"
+                                    stroke="#86efac"
+                                    strokeWidth="2"
+                                    points="10,60 20,40 30,80 40,30 50,90 60,50 70,70 80,20 90,100"
+                                />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Bottom-Right Chart - Area Chart */}
+                <div className="bg-white shadow rounded-lg p-6">
+                    <h3 className="text-lg font-medium text-gray-900 mb-4">Receita média por cluster</h3>
+                    <div className="h-64 bg-gray-100 rounded flex items-center justify-center">
+                        <div className="w-full h-full p-4">
+                            <svg className="w-full h-full" viewBox="0 0 100 100">
+                                <path
+                                    fill="rgba(139, 92, 246, 0.3)"
+                                    stroke="#8b5cf6"
+                                    strokeWidth="1"
+                                    d="M10,50 L20,30 L30,70 L40,20 L50,80 L60,40 L70,60 L80,10 L90,90 L90,100 L10,100 Z"
+                                />
+                                <path
+                                    fill="rgba(134, 239, 172, 0.3)"
+                                    stroke="#86efac"
+                                    strokeWidth="1"
+                                    d="M10,60 L20,40 L30,80 L40,30 L50,90 L60,50 L70,70 L80,20 L90,100 L90,100 L10,100 Z"
+                                />
+                            </svg>
                         </div>
                     </div>
                 </div>
