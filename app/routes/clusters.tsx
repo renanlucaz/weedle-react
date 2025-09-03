@@ -1,5 +1,6 @@
 
 import type { Route } from "./+types/clusters";
+import { PurchaseEvolutionChart, TicketDistributionChart } from "../components/charts";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -49,6 +50,32 @@ export default function Clusters() {
 
     const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
+    // Dados para os gráficos D3.js
+    const purchaseData = [
+        { month: "Jan", value: 20 },
+        { month: "Fev", value: 40 },
+        { month: "Mar", value: -60 },
+        { month: "Abr", value: 80 },
+        { month: "Mai", value: 90 },
+        { month: "Jun", value: -40 },
+        { month: "Jul", value: 30 },
+        { month: "Ago", value: 10 },
+        { month: "Set", value: 50 },
+        { month: "Out", value: 60 },
+        { month: "Nov", value: 80 },
+        { month: "Dez", value: 40 }
+    ];
+
+    const ticketData = [
+        { month: "Jan", barValue: 30, lineValue: 50 },
+        { month: "Fev", barValue: 45, lineValue: 40 },
+        { month: "Mar", barValue: 60, lineValue: 70 },
+        { month: "Abr", barValue: 35, lineValue: 30 },
+        { month: "Mai", barValue: 70, lineValue: 75 },
+        { month: "Jun", barValue: 80, lineValue: 90 },
+        { month: "Jul", barValue: 85, lineValue: 60 }
+    ];
+
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
             {/* Resumo do Cluster */}
@@ -79,9 +106,9 @@ export default function Clusters() {
             </div>
 
             {/* Lista de Clientes e Ações Estratégicas */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 {/* Lista de Clientes */}
-                <div className="bg-white rounded-lg shadow-sm">
+                <div className="bg-white rounded-lg shadow-sm lg:col-span-2">
                     <div className="p-5 border-b border-gray-200">
                         <h3 className="text-lg font-semibold text-gray-800">Lista de clientes</h3>
                     </div>
@@ -180,81 +207,29 @@ export default function Clusters() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Evolução de compras ao longo do tempo */}
                 <div className="bg-white rounded-lg shadow-sm">
-                    <div className="p-4 border-b border-gray-200">
+                    <div className="p-5 border-b border-gray-200">
                         <h3 className="text-lg font-semibold text-gray-800">Evolução de compras ao longo do tempo</h3>
                     </div>
-                    <div className="p-4">
-                        <div className="h-64 flex items-end justify-between">
-                            {meses.map((mes, index) => {
-                                const valores = [20, 40, -60, 80, 90, -40, 30, 10, 50, 60, 80, 40];
-                                const altura = ((valores[index] + 100) / 200) * 100;
-                                return (
-                                    <div key={mes} className="flex flex-col items-center">
-                                        <div
-                                            className="w-8 bg-purple-500 rounded-t"
-                                            style={{ height: `${altura}%` }}
-                                        ></div>
-                                        <span className="text-xs text-gray-500 mt-2 transform -rotate-45 origin-left">
-                                            {mes}
-                                        </span>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                        <div className="flex justify-between text-xs text-gray-500 mt-2">
-                            <span>-100</span>
-                            <span>-50</span>
-                            <span>0</span>
-                            <span>50</span>
-                            <span>100</span>
-                        </div>
+                    <div className="p-5">
+                        <PurchaseEvolutionChart
+                            data={purchaseData}
+                            width={500}
+                            height={300}
+                        />
                     </div>
                 </div>
 
                 {/* Distribuição de ticket médio */}
                 <div className="bg-white rounded-lg shadow-sm">
-                    <div className="p-4 border-b border-gray-200">
+                    <div className="p-5 border-b border-gray-200">
                         <h3 className="text-lg font-semibold text-gray-800">Distribuição de ticket médio</h3>
                     </div>
-                    <div className="p-4">
-                        <div className="h-64 flex items-end justify-between">
-                            {meses.slice(0, 7).map((mes, index) => {
-                                const valoresBarras = [30, 45, 60, 35, 70, 80, 85];
-                                const valoresLinha = [50, 40, 70, 30, 75, 90, 60];
-                                const alturaBarra = (valoresBarras[index] / 100) * 100;
-                                const alturaLinha = (valoresLinha[index] / 100) * 100;
-
-                                return (
-                                    <div key={mes} className="flex flex-col items-center relative">
-                                        {/* Barra */}
-                                        <div
-                                            className="w-8 bg-purple-500 rounded-t"
-                                            style={{ height: `${alturaBarra}%` }}
-                                        ></div>
-
-                                        {/* Linha */}
-                                        <div
-                                            className="absolute w-2 h-2 bg-teal-500 rounded-full"
-                                            style={{
-                                                bottom: `${alturaLinha}%`,
-                                                transform: 'translateX(50%)'
-                                            }}
-                                        ></div>
-
-                                        <span className="text-xs text-gray-500 mt-2 transform -rotate-45 origin-left">
-                                            {mes}
-                                        </span>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                        <div className="flex justify-between text-xs text-gray-500 mt-2">
-                            <span>0</span>
-                            <span>25</span>
-                            <span>50</span>
-                            <span>75</span>
-                            <span>100</span>
-                        </div>
+                    <div className="p-5">
+                        <TicketDistributionChart
+                            data={ticketData}
+                            width={500}
+                            height={300}
+                        />
                     </div>
                 </div>
             </div>
