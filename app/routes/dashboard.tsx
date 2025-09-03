@@ -33,7 +33,7 @@ export default function Dashboard() {
                             <div className="ml-5 w-0 flex-1">
                                 <dl>
                                     <dt className="text-sm font-medium text-gray-500 truncate">Total de Leads</dt>
-                                    <dd className="text-lg font-medium text-gray-900">2,847</dd>
+                                    <dd className="text-lg font-medium text-gray-900">2,84722</dd>
                                 </dl>
                             </div>
                         </div>
