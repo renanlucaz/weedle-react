@@ -1,10 +1,13 @@
 import { Link, Outlet, useLocation } from "react-router";
 import { useState } from "react";
+import { useLoading } from "../hooks/useLoading";
+import LoadingScreen from "./LoadingScreen";
 
 export default function Layout() {
     const location = useLocation();
     const [dashboardOpen, setDashboardOpen] = useState(true);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { isLoading, progress } = useLoading();
 
     const isActive = (path: string) => {
         return location.pathname === path;
@@ -14,6 +17,11 @@ export default function Layout() {
         return location.pathname === "/" ||
             location.pathname.startsWith("/dashboard/");
     };
+
+    // Mostrar loading screen enquanto carregando
+    if (isLoading) {
+        return <LoadingScreen progress={progress} />;
+    }
 
     return (
         <div className="flex h-screen bg-gray-50">
