@@ -5,5 +5,9 @@ export default [
         index("routes/dashboard.tsx"),
         route("clusters", "routes/clusters.tsx"),
         route("simular-leads", "routes/simular-leads.tsx"),
+        route("dashboard/clientes", "routes/dashboard.clientes.tsx"),
+        route("dashboard/nps", "routes/dashboard.nps.tsx"),
+        route("dashboard/tickets", "routes/dashboard.tickets.tsx"),
+        route("dashboard/contratos", "routes/dashboard.contratos.tsx"),
     ]),
 ] satisfies RouteConfig;

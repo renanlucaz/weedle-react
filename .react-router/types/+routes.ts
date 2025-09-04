@@ -19,16 +19,28 @@ type Pages = {
   "/simular-leads": {
     params: {};
   };
+  "/dashboard/clientes": {
+    params: {};
+  };
+  "/dashboard/nps": {
+    params: {};
+  };
+  "/dashboard/tickets": {
+    params: {};
+  };
+  "/dashboard/contratos": {
+    params: {};
+  };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/clusters" | "/simular-leads";
+    page: "/" | "/clusters" | "/simular-leads" | "/dashboard/clientes" | "/dashboard/nps" | "/dashboard/tickets" | "/dashboard/contratos";
   };
   "components/Layout.tsx": {
     id: "components/Layout";
-    page: "/" | "/clusters" | "/simular-leads";
+    page: "/" | "/clusters" | "/simular-leads" | "/dashboard/clientes" | "/dashboard/nps" | "/dashboard/tickets" | "/dashboard/contratos";
   };
   "routes/dashboard.tsx": {
     id: "routes/dashboard";
@@ -41,5 +53,21 @@ type RouteFiles = {
   "routes/simular-leads.tsx": {
     id: "routes/simular-leads";
     page: "/simular-leads";
+  };
+  "routes/dashboard.clientes.tsx": {
+    id: "routes/dashboard.clientes";
+    page: "/dashboard/clientes";
+  };
+  "routes/dashboard.nps.tsx": {
+    id: "routes/dashboard.nps";
+    page: "/dashboard/nps";
+  };
+  "routes/dashboard.tickets.tsx": {
+    id: "routes/dashboard.tickets";
+    page: "/dashboard/tickets";
+  };
+  "routes/dashboard.contratos.tsx": {
+    id: "routes/dashboard.contratos";
+    page: "/dashboard/contratos";
   };
 };
