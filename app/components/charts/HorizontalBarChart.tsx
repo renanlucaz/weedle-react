@@ -1,0 +1,176 @@
+import { useEffect, useRef } from 'react';
+import * as d3 from 'd3';
+
+interface HorizontalBarChartProps {
+    data: { label: string; value: number; fullLabel?: string }[];
+    width?: number;
+    height?: number;
+    color?: string;
+    showValues?: boolean;
+}
+
+export default function HorizontalBarChart({
+    data,
+    width = 500,
+    height = 300,
+    color = "#8b5cf6",
+    showValues = true
+}: HorizontalBarChartProps) {
+    const svgRef = useRef<SVGSVGElement>(null);
+
+    useEffect(() => {
+        if (!svgRef.current || !data.length) return;
+
+        // Limpar o SVG anterior
+        d3.select(svgRef.current).selectAll("*").remove();
+
+        const svg = d3.select(svgRef.current);
+        const margin = { top: 5, right: 40, bottom: 160, left: 60 };
+        const chartWidth = width - margin.left - margin.right;
+        const chartHeight = height - margin.top - margin.bottom;
+
+        // Escalas
+        const xScale = d3.scaleBand()
+            .domain(data.map(d => d.label))
+            .range([0, chartWidth])
+            .padding(0.1);
+
+        const yScale = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.value) || 100])
+            .range([chartHeight, 0])
+            .nice();
+
+        // Criar o grupo principal
+        const g = svg.append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // Adicionar grid horizontal PRIMEIRO (para ficar atrás)
+        g.append("g")
+            .attr("class", "grid")
+            .call(d3.axisLeft(yScale)
+                .tickSize(-chartWidth)
+                .tickFormat(() => "")
+                .ticks(4)
+            )
+            .style("stroke", "#e5e7eb")
+            .style("stroke-opacity", 0.08)
+            .selectAll(".domain")
+            .style("stroke", "none");
+
+        // Adicionar as barras verticais
+        g.selectAll(".bar")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("class", "bar")
+            .attr("x", d => xScale(d.label) || 0)
+            .attr("y", d => yScale(d.value))
+            .attr("width", xScale.bandwidth())
+            .attr("height", d => chartHeight - yScale(d.value))
+            .attr("fill", color)
+            .attr("rx", 4)
+            .attr("ry", 4)
+            .on("mouseover", function (event, d) {
+                d3.select(this).attr("fill", d3.color(color)?.brighter(0.2)?.toString() || color);
+                showTooltip(event, `${d.label}: ${d.value.toLocaleString()}`);
+            })
+            .on("mouseout", function () {
+                d3.select(this).attr("fill", color);
+                hideTooltip();
+            });
+
+        // Adicionar valores nas barras (se habilitado)
+        if (showValues) {
+            g.selectAll(".bar-label")
+                .data(data)
+                .enter()
+                .append("text")
+                .attr("class", "bar-label")
+                .attr("x", d => (xScale(d.label) || 0) + xScale.bandwidth() / 2)
+                .attr("y", d => yScale(d.value) - 5)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "14px")
+                .attr("fill", "#374151")
+                .attr("font-weight", "500")
+                .text(d => d.value.toLocaleString());
+        }
+
+        // Adicionar eixo X (labels das barras)
+        g.append("g")
+            .attr("transform", `translate(0,${chartHeight})`)
+            .call(d3.axisBottom(xScale))
+            .selectAll("text")
+            .style("font-size", "10px")
+            .style("fill", "#6b7280")
+            .style("text-anchor", "end")
+            .attr("dx", "-0.5em")
+            .attr("dy", "0.5em")
+            .attr("transform", "rotate(-45)")
+            .style("cursor", "pointer")
+            .on("mouseover", function (event, d) {
+                const dataItem = data.find(item => item.label === d);
+                const tooltipText = dataItem?.fullLabel || d;
+                showTooltip(event, tooltipText);
+            })
+            .on("mouseout", function () {
+                hideTooltip();
+            });
+
+        // Adicionar eixo Y (valores)
+        g.append("g")
+            .call(d3.axisLeft(yScale).ticks(4))
+            .selectAll("text")
+            .style("font-size", "10px")
+            .style("fill", "#6b7280");
+
+        // Remover as linhas pretas dos eixos (domain)
+        g.selectAll(".domain")
+            .style("stroke", "none");
+
+        // Tooltip
+        const tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("position", "absolute")
+            .style("background", "rgba(0, 0, 0, 0.8)")
+            .style("color", "white")
+            .style("padding", "8px 12px")
+            .style("border-radius", "6px")
+            .style("font-size", "14px")
+            .style("pointer-events", "none")
+            .style("opacity", 0)
+            .style("z-index", "1000");
+
+        function showTooltip(event: MouseEvent, text: string) {
+            tooltip.transition()
+                .duration(200)
+                .style("opacity", 1);
+            tooltip.html(text)
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 10) + "px");
+        }
+
+        function hideTooltip() {
+            tooltip.transition()
+                .duration(500)
+                .style("opacity", 0);
+        }
+
+        // Cleanup function
+        return () => {
+            d3.select("body").selectAll(".tooltip").remove();
+        };
+    }, [data, width, height, color, showValues]);
+
+    return (
+        <div className="w-full h-full">
+            <svg
+                ref={svgRef}
+                width="100%"
+                height="100%"
+                className="w-full h-full"
+                viewBox={`0 0 ${width} ${height}`}
+                preserveAspectRatio="xMidYMid meet"
+            />
+        </div>
+    );
+}

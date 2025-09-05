@@ -1,4 +1,5 @@
 import type { Route } from "./+types/dashboard";
+import { HorizontalBarChart, HorizontalBarChartHorizontal } from "../components/charts";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -8,47 +9,64 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function DashboardClientes() {
-    const clientes = [
-        {
-            id: 1,
-            nome: "Empresa ABC Ltda",
-            segmento: "Tecnologia",
-            status: "Ativo",
-            valorContrato: "R$ 25.000,00",
-            ultimaCompra: "15/01/2025",
-            nps: 85,
-            risco: "Baixo"
-        },
-        {
-            id: 2,
-            nome: "Comércio XYZ S.A.",
-            segmento: "Varejo",
-            status: "Ativo",
-            valorContrato: "R$ 18.500,00",
-            ultimaCompra: "10/01/2025",
-            nps: 72,
-            risco: "Médio"
-        },
-        {
-            id: 3,
-            nome: "Indústria DEF",
-            segmento: "Manufatura",
-            status: "Ativo",
-            valorContrato: "R$ 45.200,00",
-            ultimaCompra: "20/01/2025",
-            nps: 91,
-            risco: "Baixo"
-        },
-        {
-            id: 4,
-            nome: "Serviços GHI",
-            segmento: "Consultoria",
-            status: "Inativo",
-            valorContrato: "R$ 12.800,00",
-            ultimaCompra: "05/12/2024",
-            nps: 45,
-            risco: "Alto"
-        }
+    // Dados de faturamento
+    const dadosFaturamento = [
+        { faixa: "Sem Informações de Faturamento", quantidade: 5058 },
+        { faixa: "Faixa 11 - Acima de 850 M", quantidade: 114 },
+        { faixa: "Faixa 10 - De 500 M até 850 M", quantidade: 75 },
+        { faixa: "Faixa 09 - De 300 M até 500 M", quantidade: 143 },
+        { faixa: "Faixa 08 - De 150 M até 300 M", quantidade: 299 },
+        { faixa: "Faixa 07 - De 75 M até 150 M", quantidade: 444 },
+        { faixa: "Faixa 06 - De 50 M até 75 M", quantidade: 346 },
+        { faixa: "Faixa 05 - De 35 M até 50 M", quantidade: 310 },
+        { faixa: "Faixa 04 - De 25 M até 35 M", quantidade: 366 },
+        { faixa: "Faixa 03 - De 15 M até 25 M", quantidade: 581 },
+        { faixa: "Faixa 02 - De 7,5 M até 15 M", quantidade: 732 },
+        { faixa: "Faixa 01 - De 4,5 M até 7,5 M", quantidade: 521 },
+        { faixa: "Faixa 00 - Até 4,5 M", quantidade: 1626 }
+    ];
+
+    // Dados de atividade comercial para o gráfico horizontal
+    const dadosAtividade = [
+        { label: "SERVICOS", value: 2424 },
+        { label: "VAREJO", value: 2185 },
+        { label: "MANUFATURA", value: 2072 },
+        { label: "DISTRIBUICAO", value: 861 },
+        { label: "CONSTRUCAO E PROJETOS", value: 702 },
+        { label: "LOGISTICA", value: 650 },
+        { label: "HOSPITALITY", value: 567 },
+        { label: "EDUCACIONAL", value: 527 },
+        { label: "SAUDE", value: 298 },
+        { label: "AGROINDUSTRIA", value: 204 },
+        { label: "JURIDICO", value: 111 },
+        { label: "FINANCIAL SERVICES", value: 10 },
+        { label: "SUPERMERCADOS", value: 2 },
+        { label: "TOTVS", value: 2 }
+    ];
+
+    const totalClientes = dadosFaturamento.reduce((sum, item) => sum + item.quantidade, 0);
+
+    // Dados TOP 10 - Marca TOTVS
+    const dadosMarcaTotvs = [
+        { label: "RH - CORE", value: 2300, fullLabel: "RH - CORE" },
+        { label: "DISTRIBUICAO & ...", value: 1900, fullLabel: "DISTRIBUICAO & LOGISTICA" },
+        { label: "BACKOFFICE - C...", value: 700, fullLabel: "BACKOFFICE - CONTABILIDADE" },
+        { label: "CROSS - TRADICI...", value: 700, fullLabel: "CROSS - TRADICIONAL" },
+        { label: "HOSPITALIDADE ...", value: 600, fullLabel: "HOSPITALIDADE E TURISMO" },
+        { label: "FEEDZ", value: 400, fullLabel: "FEEDZ" },
+        { label: "TECNOLOGIA", value: 400, fullLabel: "TECNOLOGIA" },
+        { label: "MICRO E PEQUE...", value: 400, fullLabel: "MICRO E PEQUENAS EMPRESAS" },
+        { label: "SUPERMERCADO...", value: 300, fullLabel: "SUPERMERCADOS E VAREJO" },
+        { label: "CLOUD", value: 300, fullLabel: "CLOUD" }
+    ];
+
+    // Dados TOP 5 - Por UF
+    const dadosUF = [
+        { label: "SP", value: 3900 },
+        { label: "MG", value: 1000 },
+        { label: "SC", value: 700 },
+        { label: "RJ", value: 700 },
+        { label: "PR", value: 600 }
     ];
 
     return (
@@ -60,7 +78,7 @@ export default function DashboardClientes() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 <div className="bg-white p-4 rounded-lg shadow-sm">
                     <div className="flex items-center">
                         <div className="p-2 bg-blue-100 rounded-lg">
@@ -69,8 +87,8 @@ export default function DashboardClientes() {
                             </svg>
                         </div>
                         <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-500">Total de Clientes</p>
-                            <p className="text-2xl font-semibold text-gray-900">7.965</p>
+                            <p className="text-sm font-medium text-gray-500">Clientes Totais Distintos</p>
+                            <p className="text-2xl font-semibold text-gray-900">10,62 Mil</p>
                         </div>
                     </div>
                 </div>
@@ -79,26 +97,12 @@ export default function DashboardClientes() {
                     <div className="flex items-center">
                         <div className="p-2 bg-green-100 rounded-lg">
                             <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                             </svg>
                         </div>
                         <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-500">Clientes Ativos</p>
-                            <p className="text-2xl font-semibold text-gray-900">7.234</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <div className="flex items-center">
-                        <div className="p-2 bg-yellow-100 rounded-lg">
-                            <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                            </svg>
-                        </div>
-                        <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-500">Em Risco</p>
-                            <p className="text-2xl font-semibold text-gray-900">731</p>
+                            <p className="text-sm font-medium text-gray-500">Segmentos Comerciais</p>
+                            <p className="text-2xl font-semibold text-gray-900">14</p>
                         </div>
                     </div>
                 </div>
@@ -107,82 +111,171 @@ export default function DashboardClientes() {
                     <div className="flex items-center">
                         <div className="p-2 bg-purple-100 rounded-lg">
                             <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                             </svg>
                         </div>
                         <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-500">NPS Médio</p>
-                            <p className="text-2xl font-semibold text-gray-900">75%</p>
+                            <p className="text-sm font-medium text-gray-500">Subsegmentos Comerciais</p>
+                            <p className="text-2xl font-semibold text-gray-900">66</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-white p-4 rounded-lg shadow-sm">
+                    <div className="flex items-center">
+                        <div className="p-2 bg-yellow-100 rounded-lg">
+                            <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                            </svg>
+                        </div>
+                        <div className="ml-4">
+                            <p className="text-sm font-medium text-gray-500">Marca TOTVS</p>
+                            <p className="text-2xl font-semibold text-gray-900">86</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-white p-4 rounded-lg shadow-sm">
+                    <div className="flex items-center">
+                        <div className="p-2 bg-indigo-100 rounded-lg">
+                            <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <div className="ml-4">
+                            <p className="text-sm font-medium text-gray-500">Estados Alcançados</p>
+                            <p className="text-2xl font-semibold text-gray-900">39</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-white p-4 rounded-lg shadow-sm">
+                    <div className="flex items-center">
+                        <div className="p-2 bg-pink-100 rounded-lg">
+                            <svg className="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                        </div>
+                        <div className="ml-4">
+                            <p className="text-sm font-medium text-gray-500">Cidades Alcançadas</p>
+                            <p className="text-2xl font-semibold text-gray-900">1.249</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Tabela de Clientes */}
-            <div className="bg-white shadow rounded-lg overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-200">
-                    <div className="flex justify-between items-center">
-                        <h3 className="text-lg font-medium text-gray-900">Lista de Clientes</h3>
-                        <button className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors">
-                            Novo Cliente
-                        </button>
+            {/* Visualizações */}
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                {/* Tabela de Faturamento */}
+                <div className="bg-white shadow rounded-lg overflow-hidden lg:col-span-2 h-[500px] flex flex-col">
+                    <div className="px-6 py-4 border-b border-gray-200">
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-lg font-medium text-gray-900">Quantidade de clientes - por faturamento</h3>
+                        </div>
+                    </div>
+                    <div className="flex-1 overflow-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
+                                <tr>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">FAIXA_FATURAMENTO</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">QTDE_CLIENTES</th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {dadosFaturamento.map((item, index) => (
+                                    <tr key={index} className="hover:bg-gray-50 transition-colors">
+                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{item.faixa}</td>
+                                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-700">{item.quantidade.toLocaleString()}</td>
+                                    </tr>
+                                ))}
+                                <tr className="bg-gray-50 font-semibold">
+                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">Total</td>
+                                    <td className="px-4 py-3 whitespace-nowrap text-sm font-bold text-gray-900">{totalClientes.toLocaleString()}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Segmento</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor Contrato</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Última Compra</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NPS</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risco</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {clientes.map((cliente) => (
-                                <tr key={cliente.id} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm font-medium text-gray-900">{cliente.nome}</div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{cliente.segmento}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${cliente.status === 'Ativo'
-                                                ? 'bg-green-100 text-green-800'
-                                                : 'bg-red-100 text-red-800'
-                                            }`}>
-                                            {cliente.status}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">{cliente.valorContrato}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{cliente.ultimaCompra}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${cliente.nps >= 80 ? 'bg-green-100 text-green-800' :
-                                                cliente.nps >= 60 ? 'bg-yellow-100 text-yellow-800' :
-                                                    'bg-red-100 text-red-800'
-                                            }`}>
-                                            {cliente.nps}%
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${cliente.risco === 'Baixo' ? 'bg-green-100 text-green-800' :
-                                                cliente.risco === 'Médio' ? 'bg-yellow-100 text-yellow-800' :
-                                                    'bg-red-100 text-red-800'
-                                            }`}>
-                                            {cliente.risco}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-purple-600">
-                                        <a href="#" className="hover:text-purple-800 mr-3">Editar</a>
-                                        <a href="#" className="hover:text-purple-800">Ver</a>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+
+                {/* Gráfico de Atividade Comercial */}
+                <div className="bg-white shadow rounded-lg overflow-hidden lg:col-span-3 h-[500px] flex flex-col">
+                    <div className="px-6 py-4 border-b border-gray-200">
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-lg font-medium text-gray-900">Quantidade de clientes - por atividade comercial</h3>
+                        </div>
+                    </div>
+                    <div className="py-4 px-4">
+                        <HorizontalBarChart
+                            data={dadosAtividade}
+                            width={600}
+                            height={400}
+                            color="#8b5cf6"
+                            showValues={false}
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Novos Gráficos */}
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-6">
+                {/* TOP 10 - Marca TOTVS */}
+                <div className="bg-white shadow rounded-lg overflow-hidden h-[700px] flex flex-col lg:col-span-3">
+                    <div className="px-6 py-4 border-b border-gray-200">
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-lg font-medium text-gray-900">TOP 10 quantidade de clientes - por marca TOTVS</h3>
+                            <div className="flex space-x-2">
+                                <button className="p-2 text-gray-400 hover:text-gray-600">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                                    </svg>
+                                </button>
+                                <button className="p-2 text-gray-400 hover:text-gray-600">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex-1 p-2">
+                        <HorizontalBarChart
+                            data={dadosMarcaTotvs}
+                            width={1000}
+                            height={650}
+                            color="#8b5cf6"
+                            showValues={true}
+                        />
+                    </div>
+                </div>
+
+                {/* TOP 5 - Por UF */}
+                <div className="bg-white shadow rounded-lg overflow-hidden h-[600px] flex flex-col lg:col-span-2">
+                    <div className="px-6 py-4 border-b border-gray-200">
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-lg font-medium text-gray-900">TOP 5 quantidade de clientes - por UF</h3>
+                            <div className="flex space-x-2">
+                                <button className="p-2 text-gray-400 hover:text-gray-600">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                                    </svg>
+                                </button>
+                                <button className="p-2 text-gray-400 hover:text-gray-600">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex-1 p-4">
+                        <HorizontalBarChartHorizontal
+                            data={dadosUF}
+                            width={600}
+                            height={550}
+                            showValues={true}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
