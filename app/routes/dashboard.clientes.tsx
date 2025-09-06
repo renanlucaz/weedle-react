@@ -1,5 +1,6 @@
 import type { Route } from "./+types/dashboard";
 import { ActivityBarChart, Top10BarChart, Top5HorizontalBarChart } from "../components/charts";
+import { DataTable } from "../components";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -67,6 +68,37 @@ export default function DashboardClientes() {
         { label: "SC", value: 700 },
         { label: "RJ", value: 700 },
         { label: "PR", value: 600 }
+    ];
+
+    // Dados de clientes (exemplo)
+    const clientesData = [
+        { cd_cliente: "001", uf: "SP", cidade: "São Paulo", segmento: "Varejo", subsegmento: "Eletrônicos", faixa_faturamento: "Faixa 05", marca_totvs: "Datasul", inicio_relacionamento: "2020-01-15" },
+        { cd_cliente: "002", uf: "RJ", cidade: "Rio de Janeiro", segmento: "Manufatura", subsegmento: "Automotivo", faixa_faturamento: "Faixa 08", marca_totvs: "RM", inicio_relacionamento: "2019-03-22" },
+        { cd_cliente: "003", uf: "MG", cidade: "Belo Horizonte", segmento: "Serviços", subsegmento: "Consultoria", faixa_faturamento: "Faixa 03", marca_totvs: "Datasul", inicio_relacionamento: "2021-07-10" },
+        { cd_cliente: "004", uf: "RS", cidade: "Porto Alegre", segmento: "Distribuição", subsegmento: "Alimentício", faixa_faturamento: "Faixa 06", marca_totvs: "RM", inicio_relacionamento: "2018-11-05" },
+        { cd_cliente: "005", uf: "PR", cidade: "Curitiba", segmento: "Construção", subsegmento: "Residencial", faixa_faturamento: "Faixa 04", marca_totvs: "Datasul", inicio_relacionamento: "2020-09-18" },
+        { cd_cliente: "006", uf: "SC", cidade: "Florianópolis", segmento: "Logística", subsegmento: "Transporte", faixa_faturamento: "Faixa 02", marca_totvs: "RM", inicio_relacionamento: "2022-02-14" },
+        { cd_cliente: "007", uf: "BA", cidade: "Salvador", segmento: "Hospitality", subsegmento: "Hotéis", faixa_faturamento: "Faixa 07", marca_totvs: "Datasul", inicio_relacionamento: "2019-12-03" },
+        { cd_cliente: "008", uf: "GO", cidade: "Goiânia", segmento: "Educacional", subsegmento: "Universidades", faixa_faturamento: "Faixa 01", marca_totvs: "RM", inicio_relacionamento: "2021-05-20" },
+        { cd_cliente: "009", uf: "PE", cidade: "Recife", segmento: "Saúde", subsegmento: "Hospitais", faixa_faturamento: "Faixa 09", marca_totvs: "Datasul", inicio_relacionamento: "2018-08-12" },
+        { cd_cliente: "010", uf: "CE", cidade: "Fortaleza", segmento: "Agroindústria", subsegmento: "Agricultura", faixa_faturamento: "Faixa 03", marca_totvs: "RM", inicio_relacionamento: "2020-04-25" },
+        { cd_cliente: "011", uf: "DF", cidade: "Brasília", segmento: "Jurídico", subsegmento: "Advocacia", faixa_faturamento: "Faixa 00", marca_totvs: "Datasul", inicio_relacionamento: "2022-01-08" },
+        { cd_cliente: "012", uf: "MT", cidade: "Cuiabá", segmento: "Financial Services", subsegmento: "Bancos", faixa_faturamento: "Faixa 10", marca_totvs: "RM", inicio_relacionamento: "2019-06-30" },
+        { cd_cliente: "013", uf: "MS", cidade: "Campo Grande", segmento: "Supermercados", subsegmento: "Varejo", faixa_faturamento: "Faixa 05", marca_totvs: "Datasul", inicio_relacionamento: "2021-10-15" },
+        { cd_cliente: "014", uf: "AL", cidade: "Maceió", segmento: "TOTVS", subsegmento: "Tecnologia", faixa_faturamento: "Faixa 11", marca_totvs: "RM", inicio_relacionamento: "2018-02-28" },
+        { cd_cliente: "015", uf: "SE", cidade: "Aracaju", segmento: "Varejo", subsegmento: "Moda", faixa_faturamento: "Faixa 02", marca_totvs: "Datasul", inicio_relacionamento: "2020-12-10" }
+    ];
+
+    // Configuração das colunas da tabela
+    const clientesColumns = [
+        { key: "cd_cliente" as const, label: "CD_CLIENTE", sortable: true },
+        { key: "uf" as const, label: "UF", sortable: true },
+        { key: "cidade" as const, label: "CIDADE", sortable: true, highlighted: true },
+        { key: "segmento" as const, label: "SEGMENTO", sortable: true },
+        { key: "subsegmento" as const, label: "SUBSEGMENTO", sortable: true },
+        { key: "faixa_faturamento" as const, label: "FAIXA_FATURAMENTO", sortable: true },
+        { key: "marca_totvs" as const, label: "MARCA_TOTVS", sortable: true },
+        { key: "inicio_relacionamento" as const, label: "INICIO_RELACIONAMENTO", sortable: true }
     ];
 
     return (
@@ -165,57 +197,19 @@ export default function DashboardClientes() {
                 </div>
             </div>
 
-            {/* Visualizações */}
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                {/* Tabela de Faturamento */}
-                <div className="bg-white shadow rounded-lg overflow-hidden lg:col-span-2 h-[500px] flex flex-col">
-                    <div className="px-6 py-4 border-b border-gray-200">
-                        <div className="flex justify-between items-center">
-                            <h3 className="text-lg font-medium text-gray-900">Quantidade de clientes - por faturamento</h3>
-                        </div>
-                    </div>
-                    <div className="flex-1 overflow-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
-                                <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">FAIXA DE FATURAMENTO</th>
-                                    <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CLIENTES</th>
-                                </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                                {dadosFaturamento.map((item, index) => (
-                                    <tr key={index} className="hover:bg-gray-50 transition-colors">
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{item.faixa}</td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-700">{item.quantidade.toLocaleString()}</td>
-                                    </tr>
-                                ))}
-                                <tr className="bg-gray-50 font-semibold">
-                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">Total</td>
-                                    <td className="px-4 py-3 whitespace-nowrap text-sm font-bold text-gray-900">{totalClientes.toLocaleString()}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                {/* Gráfico de Atividade Comercial */}
-                <div className="bg-white shadow rounded-lg overflow-hidden lg:col-span-3 h-[500px] flex flex-col">
-                    <div className="px-6 py-4 border-b border-gray-200">
-                        <div className="flex justify-between items-center">
-                            <h3 className="text-lg font-medium text-gray-900">Quantidade de clientes - por atividade comercial</h3>
-                        </div>
-                    </div>
-                    <div className="py-4 px-4">
-                        <ActivityBarChart
-                            data={dadosAtividade}
-                            width={600}
-                            height={430}
-                            color="#8b5cf6"
-                            showValues={false}
-                        />
-                    </div>
-                </div>
+            {/* Tabela de Clientes */}
+            <div className="mt-6 mb-6">
+                <DataTable
+                    data={clientesData}
+                    columns={clientesColumns}
+                    title="Lista de clientes"
+                    searchPlaceholder="Pesquisar clientes..."
+                    itemsPerPage={10}
+                    height="500px"
+                />
             </div>
+
+
 
             {/* Novos Gráficos */}
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-6">

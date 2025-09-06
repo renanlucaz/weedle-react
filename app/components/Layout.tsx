@@ -37,7 +37,7 @@ export default function Layout() {
             <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
                 }`}>
                 {/* Logo */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                <div className="flex items-center justify-between px-6 py-1 border-b border-gray-200">
                     <div className="flex items-center">
                         <img src="/weedle.svg" alt="Weedle" className="mr-3 w-30 h-15" />
                     </div>

@@ -57,9 +57,13 @@ export default function Top5HorizontalBarChart({
             .selectAll(".domain")
             .style("stroke", "none");
 
-        // Paleta de cores roxa
+        // Paleta de cores roxa com gradiente (SP começa com #8b5cf6 e fica mais claro)
         const colorPalette = [
-            "#8b5cf6", "#7c3aed", "#6d28d9", "#5b21b6", "#4c1d95"
+            "#8b5cf6", // SP - cor principal
+            "#a78bfa", // mais claro
+            "#c4b5fd", // mais claro
+            "#ddd6fe", // mais claro
+            "#ede9fe"  // mais claro
         ];
 
         g.append("g")
@@ -89,11 +93,15 @@ export default function Top5HorizontalBarChart({
             .attr("rx", 4)
             .attr("ry", 4)
             .on("mouseover", function (event, d) {
-                d3.select(this).attr("opacity", 0.8);
+                const currentIndex = data.findIndex(item => item.label === d.label);
+                const currentColor = colorPalette[currentIndex % colorPalette.length];
+                d3.select(this).attr("fill", d3.color(currentColor)?.brighter(0.2)?.toString() || currentColor);
                 showTooltip(event, `${d.label}: ${d.value.toLocaleString()}`);
             })
-            .on("mouseout", function () {
-                d3.select(this).attr("opacity", 1);
+            .on("mouseout", function (event, d) {
+                const currentIndex = data.findIndex(item => item.label === d.label);
+                const currentColor = colorPalette[currentIndex % colorPalette.length];
+                d3.select(this).attr("fill", currentColor);
                 hideTooltip();
             });
 

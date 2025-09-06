@@ -57,6 +57,20 @@ export default function Top10BarChart({
             .selectAll(".domain")
             .style("stroke", "none");
 
+        // Paleta de cores roxa com gradiente suave (1º lugar mais escuro, último mais claro)
+        const colorPalette = [
+            "#8b5cf6", // 1º lugar - cor principal
+            "#8b5cf6", // 2º lugar - mesma cor
+            "#9d7bfa", // 3º lugar - ligeiramente mais claro
+            "#a78bfa", // 4º lugar - mais claro
+            "#b794f6", // 5º lugar - mais claro
+            "#c4b5fd", // 6º lugar - mais claro
+            "#d1c7fc", // 7º lugar - mais claro
+            "#ddd6fe", // 8º lugar - mais claro
+            "#e6ddfe", // 9º lugar - mais claro
+            "#ede9fe"  // 10º lugar - mais claro
+        ];
+
         // Adicionar as barras verticais
         g.selectAll(".bar")
             .data(data)
@@ -67,15 +81,19 @@ export default function Top10BarChart({
             .attr("y", d => yScale(d.value))
             .attr("width", xScale.bandwidth())
             .attr("height", d => chartHeight - yScale(d.value))
-            .attr("fill", color)
+            .attr("fill", (d, i) => colorPalette[i % colorPalette.length])
             .attr("rx", 4)
             .attr("ry", 4)
             .on("mouseover", function (event, d) {
-                d3.select(this).attr("fill", d3.color(color)?.brighter(0.2)?.toString() || color);
+                const currentIndex = data.findIndex(item => item.label === d.label);
+                const currentColor = colorPalette[currentIndex % colorPalette.length];
+                d3.select(this).attr("fill", d3.color(currentColor)?.brighter(0.2)?.toString() || currentColor);
                 showTooltip(event, `${d.label}: ${d.value.toLocaleString()}`);
             })
-            .on("mouseout", function () {
-                d3.select(this).attr("fill", color);
+            .on("mouseout", function (event, d) {
+                const currentIndex = data.findIndex(item => item.label === d.label);
+                const currentColor = colorPalette[currentIndex % colorPalette.length];
+                d3.select(this).attr("fill", currentColor);
                 hideTooltip();
             });
 
