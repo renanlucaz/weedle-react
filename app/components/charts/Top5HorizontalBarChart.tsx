@@ -94,7 +94,7 @@ export default function Top5HorizontalBarChart({
                 .attr("x", d => xScale(d.value) + 5)
                 .attr("y", d => (yScale(d.label) || 0) + yScale.bandwidth() / 2)
                 .attr("dy", "0.35em")
-                .attr("font-size", "12px")
+                .attr("font-size", "16px")
                 .attr("fill", "#374151")
                 .attr("font-weight", "500")
                 .text(d => d.value.toLocaleString());
@@ -104,18 +104,24 @@ export default function Top5HorizontalBarChart({
         g.append("g")
             .call(d3.axisLeft(yScale))
             .selectAll("text")
-            .style("font-size", "12px")
+            .style("font-size", "16px")
             .style("fill", "#6b7280")
             .style("text-anchor", "end")
-            .attr("dx", "-0.5em");
+            .attr("dx", "-0.5em")
+            .selectAll(".tick line")
+            .style("stroke", "#e5e7eb")
+            .style("stroke-opacity", 0.3);
 
         // Adicionar eixo X (valores)
         g.append("g")
             .attr("transform", `translate(0,${chartHeight})`)
             .call(d3.axisBottom(xScale))
             .selectAll("text")
-            .style("font-size", "12px")
-            .style("fill", "#6b7280");
+            .style("font-size", "16px")
+            .style("fill", "#6b7280")
+            .selectAll(".tick line")
+            .style("stroke", "#e5e7eb")
+            .style("stroke-opacity", 0.3);
 
         // Remover as linhas pretas dos eixos (domain)
         g.selectAll(".domain")
