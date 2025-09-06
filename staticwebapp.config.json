@@ -10,5 +10,11 @@
             "/*.ico",
             "/*.svg"
         ]
+    },
+    "responseOverrides": {
+        "redirectToWWW": {
+            "statusCode": 301,
+            "redirect": "https://www.weedle.com.br"
+        }
     }
 }
