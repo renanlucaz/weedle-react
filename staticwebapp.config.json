@@ -1,17 +1,14 @@
 {
-    "routes": [
-        {
-            "route": "/",
-            "serve": "/index.html"
-        }
-    ],
     "navigationFallback": {
-        "rewrite": "/index.html"
-    },
-    "responseOverrides": {
-        "redirectToWWW": {
-            "statusCode": 301,
-            "redirect": "https://www.weedle.com.br"
-        }
+        "rewrite": "/index.html",
+        "exclude": [
+            "/static/*",
+            "/*.css",
+            "/*.js",
+            "/*.png",
+            "/*.jpg",
+            "/*.ico",
+            "/*.svg"
+        ]
     }
 }
