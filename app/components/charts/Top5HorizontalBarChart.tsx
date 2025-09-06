@@ -108,6 +108,10 @@ export default function Top5HorizontalBarChart({
             .style("fill", "#6b7280")
             .style("text-anchor", "end")
             .attr("dx", "-0.5em")
+            .text(function (d) {
+                const text = d.toString();
+                return text.length > 8 ? text.substring(0, 8) + "..." : text;
+            })
             .selectAll(".tick line")
             .style("stroke", "#e5e7eb")
             .style("stroke-opacity", 0.3);

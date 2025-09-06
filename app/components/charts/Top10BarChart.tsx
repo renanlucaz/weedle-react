@@ -107,6 +107,10 @@ export default function Top10BarChart({
             .attr("dy", "0.5em")
             .attr("transform", "rotate(-45)")
             .style("cursor", "pointer")
+            .text(function (d) {
+                const text = d.toString();
+                return text.length > 15 ? text.substring(0, 15) + "..." : text;
+            })
             .on("mouseover", function (event, d) {
                 const dataItem = data.find(item => item.label === d);
                 const tooltipText = dataItem?.fullLabel || d;

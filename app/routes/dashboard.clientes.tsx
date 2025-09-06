@@ -178,8 +178,8 @@ export default function DashboardClientes() {
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">FAIXA_FATURAMENTO</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">QTDE_CLIENTES</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">FAIXA DE FATURAMENTO</th>
+                                    <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CLIENTES</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
@@ -209,7 +209,7 @@ export default function DashboardClientes() {
                         <ActivityBarChart
                             data={dadosAtividade}
                             width={600}
-                            height={400}
+                            height={430}
                             color="#8b5cf6"
                             showValues={false}
                         />

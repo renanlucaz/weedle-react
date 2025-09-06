@@ -68,8 +68,8 @@ export default function ActivityBarChart({
             .attr("width", xScale.bandwidth())
             .attr("height", d => chartHeight - yScale(d.value))
             .attr("fill", color)
-            .attr("rx", 4)
-            .attr("ry", 4)
+            .attr("rx", 2)
+            .attr("ry", 2)
             .on("mouseover", function (event, d) {
                 d3.select(this).attr("fill", d3.color(color)?.brighter(0.2)?.toString() || color);
                 showTooltip(event, `${d.label}: ${d.value.toLocaleString()}`);
@@ -98,7 +98,7 @@ export default function ActivityBarChart({
         // Adicionar eixo X (labels das barras)
         g.append("g")
             .attr("transform", `translate(0,${chartHeight})`)
-            .call(d3.axisBottom(xScale))
+            .call(d3.axisBottom(xScale).tickSize(0))
             .selectAll("text")
             .style("font-size", "10px")
             .style("fill", "#6b7280")
@@ -107,6 +107,10 @@ export default function ActivityBarChart({
             .attr("dy", "0.5em")
             .attr("transform", "rotate(-45)")
             .style("cursor", "pointer")
+            .text(function (d) {
+                const text = d.toString();
+                return text.length > 12 ? text.substring(0, 12) + "..." : text;
+            })
             .on("mouseover", function (event, d) {
                 showTooltip(event, d);
             })
@@ -116,10 +120,10 @@ export default function ActivityBarChart({
 
         // Adicionar eixo Y (valores)
         g.append("g")
-            .call(d3.axisLeft(yScale).ticks(4))
+            .call(d3.axisLeft(yScale).ticks(4).tickSize(0))
             .selectAll("text")
             .style("font-size", "10px")
-            .style("fill", "#6b7280");
+            .style("fill", "#6b7280")
 
         // Remover as linhas pretas dos eixos (domain)
         g.selectAll(".domain")
