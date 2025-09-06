@@ -1,6 +1,7 @@
 import type { Route } from "./+types/dashboard";
 import { ActivityBarChart, Top10BarChart, Top5HorizontalBarChart } from "../components/charts";
 import { DataTable } from "../components";
+import { useState, useEffect } from "react";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -100,6 +101,29 @@ export default function DashboardClientes() {
         { key: "marca_totvs" as const, label: "MARCA_TOTVS", sortable: true },
         { key: "inicio_relacionamento" as const, label: "INICIO_RELACIONAMENTO", sortable: true }
     ];
+
+    // Estados para responsividade
+    const [windowWidth, setWindowWidth] = useState(1024);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        // Definir largura inicial
+        handleResize();
+
+        // Adicionar listener para redimensionamento
+        window.addEventListener('resize', handleResize);
+
+        // Cleanup
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    // Calcular larguras responsivas
+    const isMobile = windowWidth < 1024;
+    const top10Width = isMobile ? Math.min(windowWidth - 100, 800) : 1000;
+    const top5Width = isMobile ? Math.min(windowWidth - 100, 500) : 600;
 
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
@@ -214,16 +238,16 @@ export default function DashboardClientes() {
             {/* Novos Gráficos */}
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-6">
                 {/* TOP 10 - Marca TOTVS */}
-                <div className="bg-white shadow rounded-lg overflow-hidden h-[450px] flex flex-col lg:col-span-3">
-                    <div className="px-6 py-4 border-b border-gray-200">
+                <div className="bg-white shadow rounded-lg overflow-hidden h-[450px] lg:h-[450px] flex flex-col lg:col-span-3">
+                    <div className="px-4 lg:px-6 py-4 border-b border-gray-200">
                         <div className="flex justify-between items-center">
-                            <h3 className="text-lg font-medium text-gray-900">TOP 10 quantidade de clientes - por marca TOTVS</h3>
+                            <h3 className="text-base lg:text-lg font-medium text-gray-900">TOP 10 quantidade de clientes - por marca TOTVS</h3>
                         </div>
                     </div>
-                    <div className="flex-1 p-2">
+                    <div className="flex-1 p-1 lg:p-2">
                         <Top10BarChart
                             data={dadosMarcaTotvs}
-                            width={1000}
+                            width={top10Width}
                             height={580}
                             color="#8b5cf6"
                             showValues={false}
@@ -232,16 +256,16 @@ export default function DashboardClientes() {
                 </div>
 
                 {/* TOP 5 - Por UF */}
-                <div className="bg-white shadow rounded-lg overflow-hidden h-[450px] flex flex-col lg:col-span-2">
-                    <div className="px-6 py-4 border-b border-gray-200">
+                <div className="bg-white shadow rounded-lg overflow-hidden h-[450px] lg:h-[450px] flex flex-col lg:col-span-2">
+                    <div className="px-4 lg:px-6 py-4 border-b border-gray-200">
                         <div className="flex justify-between items-center">
-                            <h3 className="text-lg font-medium text-gray-900">TOP 5 quantidade de clientes - por UF</h3>
+                            <h3 className="text-base lg:text-lg font-medium text-gray-900">TOP 5 quantidade de clientes - por UF</h3>
                         </div>
                     </div>
-                    <div className="flex-1 p-4">
+                    <div className="flex-1 p-2 lg:p-4">
                         <Top5HorizontalBarChart
                             data={dadosUF}
-                            width={600}
+                            width={top5Width}
                             height={480}
                             showValues={false}
                         />

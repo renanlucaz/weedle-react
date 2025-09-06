@@ -5,3 +5,5 @@ export { default as HorizontalBarChartHorizontal } from './HorizontalBarChartHor
 export { default as ActivityBarChart } from './ActivityBarChart';
 export { default as Top10BarChart } from './Top10BarChart';
 export { default as Top5HorizontalBarChart } from './Top5HorizontalBarChart';
+export { default as LineChart } from './LineChart';
+export { default as GaugeChart } from './GaugeChart';

@@ -1,4 +1,6 @@
 import type { Route } from "./+types/dashboard";
+import { LineChart, GaugeChart } from "../components/charts";
+import { useState, useEffect } from "react";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -22,6 +24,38 @@ export default function DashboardNPS() {
         { mes: "Nov", nps: 89, respondentes: 1580, tendencia: "up" },
         { mes: "Dez", nps: 91, respondentes: 1620, tendencia: "up" }
     ];
+
+    // Dados para o gráfico de linha anual
+    const npsAnualData = [
+        { year: "2019", value: 14 },
+        { year: "2020", value: 31 },
+        { year: "2021", value: 41 },
+        { year: "2022", value: 48 },
+        { year: "2023", value: 53 },
+        { year: "2024", value: 78 },
+        { year: "2025", value: 76 }
+    ];
+
+    // Estados para responsividade
+    const [windowWidth, setWindowWidth] = useState(1024);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        // Definir largura inicial
+        handleResize();
+
+        // Adicionar listener para redimensionamento
+        window.addEventListener('resize', handleResize);
+
+        // Cleanup
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    // Calcular largura responsiva
+    const chartWidth = typeof window !== 'undefined' ? Math.min(windowWidth - 100, 1200) : 1000; // More responsive base width
 
     const segmentacoes = [
         { nome: "Clientes Leais", nps: 92, total: 2340, percentual: 29.3 },
@@ -120,25 +154,36 @@ export default function DashboardNPS() {
                 </div>
             </div>
 
-            {/* Gráfico de Evolução NPS */}
-            <div className="bg-white shadow rounded-lg p-6 mb-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Evolução do NPS ao Longo do Tempo</h3>
-                <div className="h-64 flex items-end justify-between">
-                    {npsData.map((item, index) => (
-                        <div key={item.mes} className="flex flex-col items-center">
-                            <div className="flex items-center mb-2">
-                                <span className="text-xs text-gray-500 mr-1">{item.nps}</span>
-                                {getTendenciaIcon(item.tendencia)}
-                            </div>
-                            <div
-                                className="w-8 bg-purple-500 rounded-t"
-                                style={{ height: `${(item.nps / 100) * 100}%` }}
-                            ></div>
-                            <span className="text-xs text-gray-500 mt-2 transform -rotate-45 origin-left">
-                                {item.mes}
-                            </span>
-                        </div>
-                    ))}
+            {/* Gráficos de NPS */}
+            <div className="flex flex-col lg:flex-row gap-6 mb-6">
+                {/* Gráfico de Evolução NPS Anual - 65% */}
+                <div className="bg-white shadow rounded-lg p-6 lg:w-[65%]">
+                    <h3 className="text-lg font-medium text-gray-900 mb-4">Evolução do nível de satisfação ano x ano</h3>
+                    <div className="w-full overflow-hidden">
+                        <LineChart
+                            data={npsAnualData}
+                            width={Math.min(chartWidth * 0.65 - 48, 1000)}
+                            height={300}
+                            color="#8b5cf6"
+                            showValues={true}
+                        />
+                    </div>
+                </div>
+
+                {/* Gráfico Gauge de Satisfação - 35% */}
+                <div className="bg-white shadow rounded-lg p-6 lg:w-[35%]">
+                    <h3 className="text-lg font-medium text-gray-900 mb-4">Nível de satisfação de clientes</h3>
+                    <div className="flex justify-center items-center h-full overflow-hidden">
+                        <GaugeChart
+                            value={75}
+                            maxValue={100}
+                            width={Math.min(chartWidth * 0.35 - 80, 350)}
+                            height={300}
+                            color="#8b5cf6"
+                            backgroundColor="#f3f4f6"
+                            title="Nível de satisfação"
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -174,8 +219,8 @@ export default function DashboardNPS() {
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{segmentacao.percentual}%</td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${segmentacao.nps >= 80 ? 'bg-green-100 text-green-800' :
-                                                segmentacao.nps >= 60 ? 'bg-yellow-100 text-yellow-800' :
-                                                    'bg-red-100 text-red-800'
+                                            segmentacao.nps >= 60 ? 'bg-yellow-100 text-yellow-800' :
+                                                'bg-red-100 text-red-800'
                                             }`}>
                                             {segmentacao.nps >= 80 ? 'Excelente' :
                                                 segmentacao.nps >= 60 ? 'Bom' : 'Crítico'}
