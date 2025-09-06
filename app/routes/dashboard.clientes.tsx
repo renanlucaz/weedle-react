@@ -220,7 +220,7 @@ export default function DashboardClientes() {
             {/* Novos Gráficos */}
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-6">
                 {/* TOP 10 - Marca TOTVS */}
-                <div className="bg-white shadow rounded-lg overflow-hidden h-[500px] flex flex-col lg:col-span-3">
+                <div className="bg-white shadow rounded-lg overflow-hidden h-[450px] flex flex-col lg:col-span-3">
                     <div className="px-6 py-4 border-b border-gray-200">
                         <div className="flex justify-between items-center">
                             <h3 className="text-lg font-medium text-gray-900">TOP 10 quantidade de clientes - por marca TOTVS</h3>
@@ -230,15 +230,15 @@ export default function DashboardClientes() {
                         <Top10BarChart
                             data={dadosMarcaTotvs}
                             width={1000}
-                            height={650}
+                            height={580}
                             color="#8b5cf6"
-                            showValues={true}
+                            showValues={false}
                         />
                     </div>
                 </div>
 
                 {/* TOP 5 - Por UF */}
-                <div className="bg-white shadow rounded-lg overflow-hidden h-[500px] flex flex-col lg:col-span-2">
+                <div className="bg-white shadow rounded-lg overflow-hidden h-[450px] flex flex-col lg:col-span-2">
                     <div className="px-6 py-4 border-b border-gray-200">
                         <div className="flex justify-between items-center">
                             <h3 className="text-lg font-medium text-gray-900">TOP 5 quantidade de clientes - por UF</h3>
@@ -248,8 +248,8 @@ export default function DashboardClientes() {
                         <Top5HorizontalBarChart
                             data={dadosUF}
                             width={600}
-                            height={550}
-                            showValues={true}
+                            height={480}
+                            showValues={false}
                         />
                     </div>
                 </div>

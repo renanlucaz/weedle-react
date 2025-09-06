@@ -48,7 +48,7 @@ export default function Top5HorizontalBarChart({
         g.append("g")
             .attr("class", "grid")
             .call(d3.axisBottom(xScale)
-                .tickSize(-chartHeight)
+                .tickSize(0)
                 .tickFormat(() => "")
                 .ticks(4)
             )
@@ -61,6 +61,19 @@ export default function Top5HorizontalBarChart({
         const colorPalette = [
             "#8b5cf6", "#7c3aed", "#6d28d9", "#5b21b6", "#4c1d95"
         ];
+
+        g.append("g")
+            .attr("class", "grid")
+            .attr("transform", `translate(0,${chartHeight})`)
+            .call(
+                d3.axisBottom(xScale)
+                    .ticks(6)
+                    .tickSize(-chartHeight) // desenha linhas verticais
+                    .tickFormat(() => "")
+            )
+            .selectAll("line")
+            .style("stroke", "#9ca3af")       // cinza médio
+            .style("stroke-opacity", 0.5);
 
         // Adicionar as barras horizontais
         g.selectAll(".bar")
@@ -102,7 +115,7 @@ export default function Top5HorizontalBarChart({
 
         // Adicionar eixo Y (labels das barras)
         g.append("g")
-            .call(d3.axisLeft(yScale))
+            .call(d3.axisLeft(yScale).ticks(6).tickSize(0))
             .selectAll("text")
             .style("font-size", "16px")
             .style("fill", "#6b7280")
@@ -116,20 +129,27 @@ export default function Top5HorizontalBarChart({
             .style("stroke", "#e5e7eb")
             .style("stroke-opacity", 0.3);
 
+        g.append("line")
+            .attr("x1", 0)
+            .attr("x2", chartWidth)
+            .attr("y1", chartHeight)
+            .attr("y2", chartHeight)
+            .attr("stroke", "#9ca3af")       // mesma cor das verticais
+            .attr("stroke-width", 1)
+            .attr("opacity", 0.5);
+
         // Adicionar eixo X (valores)
         g.append("g")
-            .attr("transform", `translate(0,${chartHeight})`)
-            .call(d3.axisBottom(xScale))
+            .attr("transform", `translate(0,${chartHeight + 10})`)
+            .call(d3.axisBottom(xScale).ticks(6).tickSize(0))
             .selectAll("text")
-            .style("font-size", "16px")
+            .style("font-size", "17px")
             .style("fill", "#6b7280")
-            .selectAll(".tick line")
-            .style("stroke", "#e5e7eb")
-            .style("stroke-opacity", 0.3);
 
-        // Remover as linhas pretas dos eixos (domain)
+
         g.selectAll(".domain")
             .style("stroke", "none");
+
 
         // Tooltip
         const tooltip = d3.select("body").append("div")

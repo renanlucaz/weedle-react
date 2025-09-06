@@ -89,16 +89,12 @@ export default function Top10BarChart({
                 .attr("x", d => (xScale(d.label) || 0) + xScale.bandwidth() / 2)
                 .attr("y", d => yScale(d.value) - 5)
                 .attr("text-anchor", "middle")
-                .attr("font-size", "18px")
-                .attr("fill", "#374151")
-                .attr("font-weight", "500")
-                .text(d => d.value.toLocaleString());
         }
 
         // Adicionar eixo X (labels das barras)
         g.append("g")
             .attr("transform", `translate(0,${chartHeight})`)
-            .call(d3.axisBottom(xScale))
+            .call(d3.axisBottom(xScale).tickSize(0))
             .selectAll("text")
             .style("font-size", "16px")
             .style("fill", "#6b7280")
@@ -122,7 +118,7 @@ export default function Top10BarChart({
 
         // Adicionar eixo Y (valores)
         g.append("g")
-            .call(d3.axisLeft(yScale).ticks(4))
+            .call(d3.axisLeft(yScale).ticks(4).tickSize(0))
             .selectAll("text")
             .style("font-size", "16px")
             .style("fill", "#6b7280");

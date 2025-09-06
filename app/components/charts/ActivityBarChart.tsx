@@ -79,21 +79,6 @@ export default function ActivityBarChart({
                 hideTooltip();
             });
 
-        // Adicionar valores nas barras (se habilitado)
-        if (showValues) {
-            g.selectAll(".bar-label")
-                .data(data)
-                .enter()
-                .append("text")
-                .attr("class", "bar-label")
-                .attr("x", d => (xScale(d.label) || 0) + xScale.bandwidth() / 2)
-                .attr("y", d => yScale(d.value) - 5)
-                .attr("text-anchor", "middle")
-                .attr("font-size", "12px")
-                .attr("fill", "#374151")
-                .attr("font-weight", "500")
-                .text(d => d.value.toLocaleString());
-        }
 
         // Adicionar eixo X (labels das barras)
         g.append("g")
