@@ -1,5 +1,5 @@
 import type { Route } from "./+types/dashboard";
-import { HorizontalBarChart, HorizontalBarChartHorizontal } from "../components/charts";
+import { ActivityBarChart, Top10BarChart, Top5HorizontalBarChart } from "../components/charts";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -206,7 +206,7 @@ export default function DashboardClientes() {
                         </div>
                     </div>
                     <div className="py-4 px-4">
-                        <HorizontalBarChart
+                        <ActivityBarChart
                             data={dadosAtividade}
                             width={600}
                             height={400}
@@ -220,26 +220,14 @@ export default function DashboardClientes() {
             {/* Novos Gráficos */}
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-6">
                 {/* TOP 10 - Marca TOTVS */}
-                <div className="bg-white shadow rounded-lg overflow-hidden h-[700px] flex flex-col lg:col-span-3">
+                <div className="bg-white shadow rounded-lg overflow-hidden h-[500px] flex flex-col lg:col-span-3">
                     <div className="px-6 py-4 border-b border-gray-200">
                         <div className="flex justify-between items-center">
                             <h3 className="text-lg font-medium text-gray-900">TOP 10 quantidade de clientes - por marca TOTVS</h3>
-                            <div className="flex space-x-2">
-                                <button className="p-2 text-gray-400 hover:text-gray-600">
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                                    </svg>
-                                </button>
-                                <button className="p-2 text-gray-400 hover:text-gray-600">
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                                    </svg>
-                                </button>
-                            </div>
                         </div>
                     </div>
                     <div className="flex-1 p-2">
-                        <HorizontalBarChart
+                        <Top10BarChart
                             data={dadosMarcaTotvs}
                             width={1000}
                             height={650}
@@ -250,26 +238,14 @@ export default function DashboardClientes() {
                 </div>
 
                 {/* TOP 5 - Por UF */}
-                <div className="bg-white shadow rounded-lg overflow-hidden h-[600px] flex flex-col lg:col-span-2">
+                <div className="bg-white shadow rounded-lg overflow-hidden h-[500px] flex flex-col lg:col-span-2">
                     <div className="px-6 py-4 border-b border-gray-200">
                         <div className="flex justify-between items-center">
                             <h3 className="text-lg font-medium text-gray-900">TOP 5 quantidade de clientes - por UF</h3>
-                            <div className="flex space-x-2">
-                                <button className="p-2 text-gray-400 hover:text-gray-600">
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                                    </svg>
-                                </button>
-                                <button className="p-2 text-gray-400 hover:text-gray-600">
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                                    </svg>
-                                </button>
-                            </div>
                         </div>
                     </div>
                     <div className="flex-1 p-4">
-                        <HorizontalBarChartHorizontal
+                        <Top5HorizontalBarChart
                             data={dadosUF}
                             width={600}
                             height={550}

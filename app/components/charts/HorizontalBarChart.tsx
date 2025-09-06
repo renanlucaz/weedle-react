@@ -89,7 +89,7 @@ export default function HorizontalBarChart({
                 .attr("x", d => (xScale(d.label) || 0) + xScale.bandwidth() / 2)
                 .attr("y", d => yScale(d.value) - 5)
                 .attr("text-anchor", "middle")
-                .attr("font-size", "14px")
+                .attr("font-size", "16px")
                 .attr("fill", "#374151")
                 .attr("font-weight", "500")
                 .text(d => d.value.toLocaleString());
@@ -100,7 +100,7 @@ export default function HorizontalBarChart({
             .attr("transform", `translate(0,${chartHeight})`)
             .call(d3.axisBottom(xScale))
             .selectAll("text")
-            .style("font-size", "10px")
+            .style("font-size", "12px")
             .style("fill", "#6b7280")
             .style("text-anchor", "end")
             .attr("dx", "-0.5em")
@@ -120,7 +120,7 @@ export default function HorizontalBarChart({
         g.append("g")
             .call(d3.axisLeft(yScale).ticks(4))
             .selectAll("text")
-            .style("font-size", "10px")
+            .style("font-size", "12px")
             .style("fill", "#6b7280");
 
         // Remover as linhas pretas dos eixos (domain)

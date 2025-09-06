@@ -2,3 +2,6 @@ export { default as PurchaseEvolutionChart } from './PurchaseEvolutionChart';
 export { default as TicketDistributionChart } from './TicketDistributionChart';
 export { default as HorizontalBarChart } from './HorizontalBarChart';
 export { default as HorizontalBarChartHorizontal } from './HorizontalBarChartHorizontal';
+export { default as ActivityBarChart } from './ActivityBarChart';
+export { default as Top10BarChart } from './Top10BarChart';
+export { default as Top5HorizontalBarChart } from './Top5HorizontalBarChart';

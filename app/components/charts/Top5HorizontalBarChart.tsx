@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
-interface HorizontalBarChartHorizontalProps {
+interface Top5HorizontalBarChartProps {
     data: { label: string; value: number }[];
     width?: number;
     height?: number;
@@ -9,13 +9,13 @@ interface HorizontalBarChartHorizontalProps {
     showValues?: boolean;
 }
 
-export default function HorizontalBarChartHorizontal({
+export default function Top5HorizontalBarChart({
     data,
     width = 500,
     height = 300,
     color = "#8b5cf6",
     showValues = true
-}: HorizontalBarChartHorizontalProps) {
+}: Top5HorizontalBarChartProps) {
     const svgRef = useRef<SVGSVGElement>(null);
 
     useEffect(() => {
@@ -44,7 +44,7 @@ export default function HorizontalBarChartHorizontal({
         const g = svg.append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        // Adicionar grid vertical PRIMEIRO (para ficar atrás)
+        // Adicionar grid vertical
         g.append("g")
             .attr("class", "grid")
             .call(d3.axisBottom(xScale)
@@ -57,6 +57,11 @@ export default function HorizontalBarChartHorizontal({
             .selectAll(".domain")
             .style("stroke", "none");
 
+        // Paleta de cores roxa
+        const colorPalette = [
+            "#8b5cf6", "#7c3aed", "#6d28d9", "#5b21b6", "#4c1d95"
+        ];
+
         // Adicionar as barras horizontais
         g.selectAll(".bar")
             .data(data)
@@ -67,11 +72,7 @@ export default function HorizontalBarChartHorizontal({
             .attr("y", d => yScale(d.label) || 0)
             .attr("width", d => xScale(d.value))
             .attr("height", yScale.bandwidth())
-            .attr("fill", (d, i) => {
-                // Gradiente de cores roxas do mais escuro para o mais claro
-                const colors = ["#6d28d9", "#8b5cf6", "#a78bfa", "#c4b5fd", "#e9d5ff"];
-                return colors[i % colors.length];
-            })
+            .attr("fill", (d, i) => colorPalette[i % colorPalette.length])
             .attr("rx", 4)
             .attr("ry", 4)
             .on("mouseover", function (event, d) {

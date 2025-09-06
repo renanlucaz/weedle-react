@@ -1,21 +1,21 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
-interface HorizontalBarChartHorizontalProps {
-    data: { label: string; value: number }[];
+interface Top10BarChartProps {
+    data: { label: string; value: number; fullLabel?: string }[];
     width?: number;
     height?: number;
     color?: string;
     showValues?: boolean;
 }
 
-export default function HorizontalBarChartHorizontal({
+export default function Top10BarChart({
     data,
     width = 500,
     height = 300,
     color = "#8b5cf6",
     showValues = true
-}: HorizontalBarChartHorizontalProps) {
+}: Top10BarChartProps) {
     const svgRef = useRef<SVGSVGElement>(null);
 
     useEffect(() => {
@@ -25,30 +25,30 @@ export default function HorizontalBarChartHorizontal({
         d3.select(svgRef.current).selectAll("*").remove();
 
         const svg = d3.select(svgRef.current);
-        const margin = { top: 20, right: 40, bottom: 40, left: 80 };
+        const margin = { top: 5, right: 40, bottom: 200, left: 60 };
         const chartWidth = width - margin.left - margin.right;
         const chartHeight = height - margin.top - margin.bottom;
 
         // Escalas
-        const xScale = d3.scaleLinear()
-            .domain([0, d3.max(data, d => d.value) || 100])
-            .range([0, chartWidth])
-            .nice();
-
-        const yScale = d3.scaleBand()
+        const xScale = d3.scaleBand()
             .domain(data.map(d => d.label))
-            .range([0, chartHeight])
+            .range([0, chartWidth])
             .padding(0.1);
+
+        const yScale = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.value) || 100])
+            .range([chartHeight, 0])
+            .nice();
 
         // Criar o grupo principal
         const g = svg.append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        // Adicionar grid vertical PRIMEIRO (para ficar atrás)
+        // Adicionar grid horizontal PRIMEIRO (para ficar atrás)
         g.append("g")
             .attr("class", "grid")
-            .call(d3.axisBottom(xScale)
-                .tickSize(-chartHeight)
+            .call(d3.axisLeft(yScale)
+                .tickSize(-chartWidth)
                 .tickFormat(() => "")
                 .ticks(4)
             )
@@ -57,29 +57,25 @@ export default function HorizontalBarChartHorizontal({
             .selectAll(".domain")
             .style("stroke", "none");
 
-        // Adicionar as barras horizontais
+        // Adicionar as barras verticais
         g.selectAll(".bar")
             .data(data)
             .enter()
             .append("rect")
             .attr("class", "bar")
-            .attr("x", 0)
-            .attr("y", d => yScale(d.label) || 0)
-            .attr("width", d => xScale(d.value))
-            .attr("height", yScale.bandwidth())
-            .attr("fill", (d, i) => {
-                // Gradiente de cores roxas do mais escuro para o mais claro
-                const colors = ["#6d28d9", "#8b5cf6", "#a78bfa", "#c4b5fd", "#e9d5ff"];
-                return colors[i % colors.length];
-            })
+            .attr("x", d => xScale(d.label) || 0)
+            .attr("y", d => yScale(d.value))
+            .attr("width", xScale.bandwidth())
+            .attr("height", d => chartHeight - yScale(d.value))
+            .attr("fill", color)
             .attr("rx", 4)
             .attr("ry", 4)
             .on("mouseover", function (event, d) {
-                d3.select(this).attr("opacity", 0.8);
+                d3.select(this).attr("fill", d3.color(color)?.brighter(0.2)?.toString() || color);
                 showTooltip(event, `${d.label}: ${d.value.toLocaleString()}`);
             })
             .on("mouseout", function () {
-                d3.select(this).attr("opacity", 1);
+                d3.select(this).attr("fill", color);
                 hideTooltip();
             });
 
@@ -90,30 +86,41 @@ export default function HorizontalBarChartHorizontal({
                 .enter()
                 .append("text")
                 .attr("class", "bar-label")
-                .attr("x", d => xScale(d.value) + 5)
-                .attr("y", d => (yScale(d.label) || 0) + yScale.bandwidth() / 2)
-                .attr("dy", "0.35em")
-                .attr("font-size", "12px")
+                .attr("x", d => (xScale(d.label) || 0) + xScale.bandwidth() / 2)
+                .attr("y", d => yScale(d.value) - 5)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "18px")
                 .attr("fill", "#374151")
                 .attr("font-weight", "500")
                 .text(d => d.value.toLocaleString());
         }
 
-        // Adicionar eixo Y (labels das barras)
-        g.append("g")
-            .call(d3.axisLeft(yScale))
-            .selectAll("text")
-            .style("font-size", "12px")
-            .style("fill", "#6b7280")
-            .style("text-anchor", "end")
-            .attr("dx", "-0.5em");
-
-        // Adicionar eixo X (valores)
+        // Adicionar eixo X (labels das barras)
         g.append("g")
             .attr("transform", `translate(0,${chartHeight})`)
             .call(d3.axisBottom(xScale))
             .selectAll("text")
-            .style("font-size", "12px")
+            .style("font-size", "16px")
+            .style("fill", "#6b7280")
+            .style("text-anchor", "end")
+            .attr("dx", "-0.5em")
+            .attr("dy", "0.5em")
+            .attr("transform", "rotate(-45)")
+            .style("cursor", "pointer")
+            .on("mouseover", function (event, d) {
+                const dataItem = data.find(item => item.label === d);
+                const tooltipText = dataItem?.fullLabel || d;
+                showTooltip(event, tooltipText);
+            })
+            .on("mouseout", function () {
+                hideTooltip();
+            });
+
+        // Adicionar eixo Y (valores)
+        g.append("g")
+            .call(d3.axisLeft(yScale).ticks(4))
+            .selectAll("text")
+            .style("font-size", "16px")
             .style("fill", "#6b7280");
 
         // Remover as linhas pretas dos eixos (domain)
