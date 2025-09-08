@@ -1,11 +1,11 @@
-import { useEffect, useRef } from 'react';
-import * as d3 from 'd3';
+import { useEffect, useRef } from "react";
+import * as d3 from "d3";
 
 interface GaugeChartProps {
     value: number;
     maxValue?: number;
-    width: number;
-    height: number;
+    width?: number;
+    height?: number;
     color?: string;
     backgroundColor?: string;
     title?: string;
@@ -14,11 +14,11 @@ interface GaugeChartProps {
 export default function GaugeChart({
     value,
     maxValue = 100,
-    width,
-    height,
+    width = 300,   // pode ser 300
+    height = 200,  // pode ser 200 (mais retangular)
     color = "#8b5cf6",
     backgroundColor = "#f3f4f6",
-    title = "Nível de satisfação"
+    title = "Nível de satisfação",
 }: GaugeChartProps) {
     const svgRef = useRef<SVGSVGElement>(null);
 
@@ -28,61 +28,74 @@ export default function GaugeChart({
         const svg = d3.select(svgRef.current);
         svg.selectAll("*").remove();
 
-        const margin = { top: 20, right: 20, bottom: 60, left: 20 };
-        const chartWidth = width - margin.left - margin.right;
-        const chartHeight = height - margin.top - margin.bottom;
+        const radius = Math.min(width, height * 2) / 2; // ajusta p/ semicírculo
+        const thickness = radius * 0.25;
 
-        const g = svg
-            .attr("width", width)
-            .attr("height", height)
-            .append("g")
-            .attr("transform", `translate(${margin.left + chartWidth / 2},${margin.top + chartHeight / 2})`);
+        const valueScale = d3
+            .scaleLinear()
+            .domain([0, maxValue])
+            .range([-Math.PI / 2, Math.PI / 2]);
 
-        // Configurações do gauge
-        const radius = Math.min(chartWidth, chartHeight) / 2 - 30;
-        const startAngle = -Math.PI / 2; // -90 graus (topo)
-        const endAngle = Math.PI / 2; // 90 graus (topo)
-        const percentage = value / maxValue;
-
-        // Escala para o arco
-        const arcScale = d3.scaleLinear()
-            .domain([0, 1])
-            .range([startAngle, endAngle]);
-
-        // Função para criar o arco
-        const arc = d3.arc<number>()
-            .innerRadius(radius - 50)
+        const arcBackground = d3.arc()
+            .innerRadius(radius - thickness)
             .outerRadius(radius)
-            .startAngle(startAngle)
-            .endAngle(d => d);
+            .startAngle(-Math.PI / 2)
+            .endAngle(Math.PI / 2);
 
-        // Arco de fundo (não preenchido)
+        const arcValue = d3.arc()
+            .innerRadius(radius - thickness)
+            .outerRadius(radius)
+            .startAngle(-Math.PI / 2)
+            .endAngle(valueScale(value));
+
+        // centraliza na largura, mas cola na parte de baixo
+        const g = svg
+            .append("g")
+            .attr("transform", `translate(${width / 2}, ${height})`);
+
+        // fundo
         g.append("path")
-            .datum(endAngle)
-            .attr("d", arc)
-            .attr("fill", backgroundColor)
-            .attr("stroke", "none");
+            .attr("d", arcBackground as any)
+            .attr("fill", backgroundColor);
 
-        // Arco preenchido (valor atual)
+        // valor
         g.append("path")
-            .datum(arcScale(percentage))
-            .attr("d", arc)
-            .attr("fill", color)
-            .attr("stroke", "none");
+            .attr("d", arcValue as any)
+            .attr("fill", color);
 
-        // Valor central
+        // texto percentual embaixo do arco
         g.append("text")
             .attr("text-anchor", "middle")
-            .attr("dy", "0.35em")
-            .attr("y", 20) // Posicionar um pouco abaixo do centro
-            .style("font-size", "2.2rem")
-            .style("font-weight", "bold")
-            .style("fill", "#666666")
-            .style("font-family", "sans-serif")
-            .text(`${value}%`);
+            .attr("dy", "0px")
+            .style("font-size", `${radius * 0.2}px`)
+            .style("fill", "#4b5563")
+            .text(`${Math.round((value / maxValue) * 100)}%`);
 
+        // extremos
+        g.append("text")
+            .attr("x", -radius + 10)
+            .attr("y", 35)
+            .attr("text-anchor", "start")
+            .style("font-size", `${radius * 0.1}px`)
+            .style("fill", "#6b7280")
+            .text("0");
 
-    }, [value, maxValue, width, height, color, backgroundColor, title]);
+        g.append("text")
+            .attr("x", radius - 10)
+            .attr("y", 35)
+            .attr("text-anchor", "end")
+            .style("font-size", `${radius * 0.1}px`)
+            .style("fill", "#6b7280")
+            .text(maxValue.toLocaleString());
+    }, [value, maxValue, width, height, color, backgroundColor]);
 
-    return <svg ref={svgRef}></svg>;
+    return (
+        <svg
+            ref={svgRef}
+            viewBox={`0 0 ${width} ${height}`}
+            width="100%"
+            height="100%"
+            preserveAspectRatio="xMidYMid meet"
+        />
+    );
 }

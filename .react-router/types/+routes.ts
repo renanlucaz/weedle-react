@@ -25,9 +25,6 @@ type Pages = {
   "/dashboard/nps": {
     params: {};
   };
-  "/dashboard/tickets": {
-    params: {};
-  };
   "/dashboard/contratos": {
     params: {};
   };
@@ -36,11 +33,11 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/clusters" | "/simular-leads" | "/dashboard/clientes" | "/dashboard/nps" | "/dashboard/tickets" | "/dashboard/contratos";
+    page: "/" | "/clusters" | "/simular-leads" | "/dashboard/clientes" | "/dashboard/nps" | "/dashboard/contratos";
   };
   "components/Layout.tsx": {
     id: "components/Layout";
-    page: "/" | "/clusters" | "/simular-leads" | "/dashboard/clientes" | "/dashboard/nps" | "/dashboard/tickets" | "/dashboard/contratos";
+    page: "/" | "/clusters" | "/simular-leads" | "/dashboard/clientes" | "/dashboard/nps" | "/dashboard/contratos";
   };
   "routes/dashboard.tsx": {
     id: "routes/dashboard";
@@ -61,10 +58,6 @@ type RouteFiles = {
   "routes/dashboard.nps.tsx": {
     id: "routes/dashboard.nps";
     page: "/dashboard/nps";
-  };
-  "routes/dashboard.tickets.tsx": {
-    id: "routes/dashboard.tickets";
-    page: "/dashboard/tickets";
   };
   "routes/dashboard.contratos.tsx": {
     id: "routes/dashboard.contratos";

@@ -1,5 +1,6 @@
 import type { Route } from "./+types/dashboard";
 import { LineChart, GaugeChart } from "../components/charts";
+import { DataTable } from "../components";
 import { useState, useEffect } from "react";
 
 export function meta({ }: Route.MetaArgs) {
@@ -64,6 +65,122 @@ export default function DashboardNPS() {
         { nome: "Baixo Rendimento", nps: 65, total: 1230, percentual: 15.4 },
         { nome: "Clientes Premium", nps: 95, total: 980, percentual: 12.3 },
         { nome: "Clientes Básicos", nps: 71, total: 1000, percentual: 12.5 }
+    ];
+
+    // Tipo para os dados do Analítico NPS
+    type DadosAnaliticoNPS = {
+        cdCliente: string;
+        segmento: string;
+        subsegmento: string;
+        faixaFaturamento: string;
+        situacaoContrato: string;
+        valorTotalContrato: string;
+        percentualDesconto: string;
+        mediaResolucaoTicket: string;
+        classificacaoNPS: string;
+        notaMedia: string;
+    };
+
+    // Dados para a tabela Analítico NPS
+    const dadosAnaliticoNPS: DadosAnaliticoNPS[] = [
+        {
+            cdCliente: "TEZMHC",
+            segmento: "VAREJO",
+            subsegmento: "MAGAZINE E LOJA DE DEPARTAMENTOS",
+            faixaFaturamento: "Faixa 02 - De 7,5 M ate 15 M",
+            situacaoContrato: "ATIVO",
+            valorTotalContrato: "R$ 4.107.036",
+            percentualDesconto: "1,11%",
+            mediaResolucaoTicket: "",
+            classificacaoNPS: "DETRATOR",
+            notaMedia: "3,04"
+        },
+        {
+            cdCliente: "TEZMHC",
+            segmento: "VAREJO",
+            subsegmento: "MAGAZINE E LOJA DE DEPARTAMENTOS",
+            faixaFaturamento: "Faixa 02 - De 7,5 M ate 15 M",
+            situacaoContrato: "ATIVO",
+            valorTotalContrato: "R$ 4.107.036",
+            percentualDesconto: "1,11%",
+            mediaResolucaoTicket: "",
+            classificacaoNPS: "NEUTRO",
+            notaMedia: "7,79"
+        },
+        {
+            cdCliente: "TEZMHC",
+            segmento: "VAREJO",
+            subsegmento: "MAGAZINE E LOJA DE DEPARTAMENTOS",
+            faixaFaturamento: "Faixa 02 - De 7,5 M ate 15 M",
+            situacaoContrato: "ATIVO",
+            valorTotalContrato: "R$ 4.107.036",
+            percentualDesconto: "1,11%",
+            mediaResolucaoTicket: "",
+            classificacaoNPS: "PROMOTOR",
+            notaMedia: "9,82"
+        },
+        {
+            cdCliente: "TEZM89",
+            segmento: "LOGISTICA",
+            subsegmento: "TRANSPORTADOR",
+            faixaFaturamento: "Faixa 07 - De 75 M ate 150 M",
+            situacaoContrato: "ATIVO",
+            valorTotalContrato: "R$ 4.027.219",
+            percentualDesconto: "0,88%",
+            mediaResolucaoTicket: "",
+            classificacaoNPS: "DETRATOR",
+            notaMedia: "1,80"
+        },
+        {
+            cdCliente: "TEZM89",
+            segmento: "LOGISTICA",
+            subsegmento: "TRANSPORTADOR",
+            faixaFaturamento: "Faixa 07 - De 75 M ate 150 M",
+            situacaoContrato: "ATIVO",
+            valorTotalContrato: "R$ 4.027.219",
+            percentualDesconto: "0,88%",
+            mediaResolucaoTicket: "",
+            classificacaoNPS: "NEUTRO",
+            notaMedia: "7,50"
+        },
+        {
+            cdCliente: "TEZM89",
+            segmento: "LOGISTICA",
+            subsegmento: "TRANSPORTADOR",
+            faixaFaturamento: "Faixa 07 - De 75 M ate 150 M",
+            situacaoContrato: "ATIVO",
+            valorTotalContrato: "R$ 4.027.219",
+            percentualDesconto: "0,88%",
+            mediaResolucaoTicket: "",
+            classificacaoNPS: "PROMOTOR",
+            notaMedia: "10,00"
+        },
+        {
+            cdCliente: "TEZMFC",
+            segmento: "SERVICOS",
+            subsegmento: "PROVEDOR SERVICOS",
+            faixaFaturamento: "Faixa 03 - De 15 M ate 25 M",
+            situacaoContrato: "ATIVO",
+            valorTotalContrato: "R$ 4.018.639",
+            percentualDesconto: "0,75%",
+            mediaResolucaoTicket: "",
+            classificacaoNPS: "DETRATOR",
+            notaMedia: "1,00"
+        }
+    ];
+
+    // Colunas para a tabela Analítico NPS
+    const colunasAnaliticoNPS = [
+        { key: "cdCliente" as keyof DadosAnaliticoNPS, label: "Cliente", sortable: true },
+        { key: "segmento" as keyof DadosAnaliticoNPS, label: "Segmento", sortable: true },
+        { key: "subsegmento" as keyof DadosAnaliticoNPS, label: "Subsegmento", sortable: true },
+        { key: "faixaFaturamento" as keyof DadosAnaliticoNPS, label: "Faixa Faturamento", sortable: true },
+        { key: "situacaoContrato" as keyof DadosAnaliticoNPS, label: "Status Contrato", sortable: true },
+        { key: "valorTotalContrato" as keyof DadosAnaliticoNPS, label: "Valor Total Contrato", sortable: true },
+        { key: "percentualDesconto" as keyof DadosAnaliticoNPS, label: "%Desconto", sortable: true },
+        { key: "mediaResolucaoTicket" as keyof DadosAnaliticoNPS, label: "Tempo resolução tickets", sortable: true },
+        { key: "classificacaoNPS" as keyof DadosAnaliticoNPS, label: "Classificacao NPS", sortable: true },
+        { key: "notaMedia" as keyof DadosAnaliticoNPS, label: "Nota Media", sortable: true }
     ];
 
     const getNPSColor = (nps: number) => {
@@ -171,71 +288,25 @@ export default function DashboardNPS() {
                 </div>
 
                 {/* Gráfico Gauge de Satisfação - 35% */}
-                <div className="bg-white shadow rounded-lg p-6 lg:w-[35%]">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Nível de satisfação de clientes</h3>
-                    <div className="flex justify-center items-center h-full overflow-hidden">
-                        <GaugeChart
-                            value={75}
-                            maxValue={100}
-                            width={Math.min(chartWidth * 0.35 - 80, 350)}
-                            height={300}
-                            color="#8b5cf6"
-                            backgroundColor="#f3f4f6"
-                            title="Nível de satisfação"
-                        />
+                <div className="bg-white shadow rounded-lg p-6 flex flex-col items-center justify-center w-full max-w-[400px] mx-auto">
+                    <h3 className="text-lg font-medium text-gray-900 mb-4">
+                        Nível de satisfação de clientes
+                    </h3>
+                    <div className="w-full h-full flex items-center justify-center">
+                        <GaugeChart value={75} maxValue={100} width={400} height={180} />
                     </div>
                 </div>
             </div>
 
-            {/* Tabela de Segmentações por NPS */}
-            <div className="bg-white shadow rounded-lg overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900">NPS por Segmentação</h3>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Segmentação</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NPS</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Clientes</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Percentual</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {segmentacoes.map((segmentacao, index) => (
-                                <tr key={index} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm font-medium text-gray-900">{segmentacao.nome}</div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`text-lg font-semibold ${getNPSColor(segmentacao.nps)}`}>
-                                            {segmentacao.nps}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{segmentacao.total.toLocaleString()}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{segmentacao.percentual}%</td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${segmentacao.nps >= 80 ? 'bg-green-100 text-green-800' :
-                                            segmentacao.nps >= 60 ? 'bg-yellow-100 text-yellow-800' :
-                                                'bg-red-100 text-red-800'
-                                            }`}>
-                                            {segmentacao.nps >= 80 ? 'Excelente' :
-                                                segmentacao.nps >= 60 ? 'Bom' : 'Crítico'}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-purple-600">
-                                        <a href="#" className="hover:text-purple-800 mr-3">Analisar</a>
-                                        <a href="#" className="hover:text-purple-800">Relatório</a>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            {/* Tabela Analítico NPS */}
+            <DataTable
+                data={dadosAnaliticoNPS}
+                columns={colunasAnaliticoNPS}
+                title="NPS por cliente"
+                searchPlaceholder="Pesquisar clientes..."
+                itemsPerPage={10}
+                height="500px"
+            />
         </div>
     );
 }
