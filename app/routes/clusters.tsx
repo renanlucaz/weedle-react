@@ -1,6 +1,24 @@
 
 import type { Route } from "./+types/clusters";
-import { PurchaseEvolutionChart, TicketDistributionChart } from "../components/charts";
+import { useState } from "react";
+import { ClusterNetworkChart, ClusterDrawer } from "../components";
+
+interface Cluster {
+    id: string;
+    name: string;
+    size: number;
+    color: string;
+    x: number;
+    y: number;
+    description: string;
+    metrics: {
+        totalClients: number;
+        avgTicket: string;
+        frequency: string;
+        lastOrder: string;
+    };
+    keywords: string[];
+}
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -10,234 +28,210 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function Clusters() {
-    const clientes = [
+    const [selectedCluster, setSelectedCluster] = useState<Cluster | null>(null);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+
+    // Dados mockados dos clusters
+    const clusters: Cluster[] = [
         {
-            nome: "Empresa 1",
-            localizacao: "Av Paulista, São Paulo - SP",
-            ticketMedio: "R$1.240,00",
-            frequencia: "3x/semana",
-            ultimoPedido: "12/02/2023"
+            id: "cluster-1",
+            name: "Clientes Premium",
+            size: 120,
+            color: "#8B5CF6",
+            x: 0,
+            y: 0,
+            description: "Clientes de alto valor com frequência de compra elevada e ticket médio superior",
+            metrics: {
+                totalClients: 45,
+                avgTicket: "R$ 2.450,00",
+                frequency: "5x/semana",
+                lastOrder: "15/01/2025"
+            },
+            keywords: [
+                "COMPRAS FREQUENTES",
+                "TICKET ALTO",
+                "FIDELIDADE",
+                "PRODUTOS PREMIUM",
+                "ATENDIMENTO VIP",
+                "ENTREGAS RÁPIDAS",
+                "DESCONTOS EXCLUSIVOS",
+                "SUPORTE PRIORITÁRIO"
+            ]
         },
         {
-            nome: "Empresa 2",
-            localizacao: "Av Paulista, São Paulo - SP",
-            ticketMedio: "R$1.240,00",
-            frequencia: "3x/semana",
-            ultimoPedido: "12/02/2023"
+            id: "cluster-2",
+            name: "Clientes Regulares",
+            size: 100,
+            color: "#10B981",
+            x: 0,
+            y: 0,
+            description: "Base sólida de clientes com padrão de compra consistente e moderado",
+            metrics: {
+                totalClients: 128,
+                avgTicket: "R$ 1.200,00",
+                frequency: "2x/semana",
+                lastOrder: "18/01/2025"
+            },
+            keywords: [
+                "COMPRAS REGULARES",
+                "TICKET MÉDIO",
+                "PRODUTOS BÁSICOS",
+                "PROMOÇÕES",
+                "ATENDIMENTO PADRÃO",
+                "ENTREGAS NORMALS",
+                "CUPONS",
+                "CAMPANHAS"
+            ]
         },
         {
-            nome: "Empresa 3",
-            localizacao: "Av Paulista, São Paulo - SP",
-            ticketMedio: "R$1.240,00",
-            frequencia: "3x/semana",
-            ultimoPedido: "12/02/2023"
+            id: "cluster-3",
+            name: "Clientes Ocasionais",
+            size: 80,
+            color: "#F59E0B",
+            x: 0,
+            y: 0,
+            description: "Clientes com baixa frequência mas potencial de crescimento",
+            metrics: {
+                totalClients: 89,
+                avgTicket: "R$ 850,00",
+                frequency: "1x/mês",
+                lastOrder: "05/01/2025"
+            },
+            keywords: [
+                "COMPRAS OCASIONAIS",
+                "TICKET BAIXO",
+                "PRODUTOS BÁSICOS",
+                "OFERTAS",
+                "ATENDIMENTO BÁSICO",
+                "ENTREGAS PADRÃO",
+                "DESCONTOS",
+                "REATIVAÇÃO"
+            ]
         },
         {
-            nome: "Empresa 4",
-            localizacao: "Av Paulista, São Paulo - SP",
-            ticketMedio: "R$1.240,00",
-            frequencia: "3x/semana",
-            ultimoPedido: "12/02/2023"
+            id: "cluster-4",
+            name: "Novos Clientes",
+            size: 60,
+            color: "#EF4444",
+            x: 0,
+            y: 0,
+            description: "Clientes recém-cadastrados em processo de onboarding",
+            metrics: {
+                totalClients: 67,
+                avgTicket: "R$ 650,00",
+                frequency: "1x/mês",
+                lastOrder: "20/01/2025"
+            },
+            keywords: [
+                "PRIMEIRA COMPRA",
+                "ONBOARDING",
+                "PRODUTOS INICIAIS",
+                "BEM-VINDO",
+                "ATENDIMENTO ESPECIAL",
+                "ENTREGAS RÁPIDAS",
+                "DESCONTO INICIAL",
+                "ACOMPANHAMENTO"
+            ]
+        },
+        {
+            id: "cluster-5",
+            name: "Clientes Corporativos",
+            size: 140,
+            color: "#06B6D4",
+            x: 0,
+            y: 0,
+            description: "Empresas com volume alto de compras e contratos especiais",
+            metrics: {
+                totalClients: 23,
+                avgTicket: "R$ 5.200,00",
+                frequency: "3x/semana",
+                lastOrder: "19/01/2025"
+            },
+            keywords: [
+                "COMPRAS CORPORATIVAS",
+                "TICKET ALTO",
+                "CONTRATOS",
+                "ATENDIMENTO DEDICADO",
+                "ENTREGAS PROGRAMADAS",
+                "DESCONTOS VOLUME",
+                "SUPORTE TÉCNICO",
+                "RELACIONAMENTO"
+            ]
+        },
+        {
+            id: "cluster-6",
+            name: "Clientes Sazonais",
+            size: 70,
+            color: "#EC4899",
+            x: 0,
+            y: 0,
+            description: "Clientes que compram apenas em períodos específicos do ano",
+            metrics: {
+                totalClients: 34,
+                avgTicket: "R$ 1.800,00",
+                frequency: "2x/ano",
+                lastOrder: "12/12/2024"
+            },
+            keywords: [
+                "COMPRAS SAZONAIS",
+                "PERÍODOS ESPECÍFICOS",
+                "PRODUTOS TEMÁTICOS",
+                "CAMPANHAS SAZONAIS",
+                "ATENDIMENTO ESPECIAL",
+                "ENTREGAS URGENTES",
+                "PROMOÇÕES TEMPORAIS",
+                "LEMBRETE"
+            ]
         }
     ];
 
-    const acoesEstrategicas = [
-        "Programa de fidelidade com cashback ou pontos extras",
-        "Ofertas exclusivas de pré lançamento de produtos",
-        "Convite para eventos VIP ou experiências personalizadas",
-        "Envio de cupons"
-    ];
+    const handleClusterClick = (cluster: Cluster) => {
+        setSelectedCluster(cluster);
+        setIsDrawerOpen(true);
+    };
 
-    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    const handleCloseDrawer = () => {
+        setIsDrawerOpen(false);
+        setSelectedCluster(null);
+    };
 
-    // Dados para os gráficos D3.js
-    const purchaseData = [
-        { month: "Jan", value: 20 },
-        { month: "Fev", value: 40 },
-        { month: "Mar", value: -60 },
-        { month: "Abr", value: 80 },
-        { month: "Mai", value: 90 },
-        { month: "Jun", value: -40 },
-        { month: "Jul", value: 30 },
-        { month: "Ago", value: 10 },
-        { month: "Set", value: 50 },
-        { month: "Out", value: 60 },
-        { month: "Nov", value: 80 },
-        { month: "Dez", value: 40 }
-    ];
-
-    const ticketData = [
-        { month: "Jan", barValue: 30, lineValue: 50 },
-        { month: "Fev", barValue: 45, lineValue: 40 },
-        { month: "Mar", barValue: 60, lineValue: 70 },
-        { month: "Abr", barValue: 35, lineValue: 30 },
-        { month: "Mai", barValue: 70, lineValue: 75 },
-        { month: "Jun", barValue: 80, lineValue: 90 },
-        { month: "Jul", barValue: 85, lineValue: 60 }
-    ];
+    // Filtrar clusters baseado na busca
+    const filteredClusters = clusters.filter(cluster =>
+        cluster.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        cluster.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        cluster.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
 
     return (
-        <div className="p-6 bg-gray-50 min-h-screen">
-            {/* Resumo do Cluster */}
-            <div className="mb-8">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Resumo do cluster</h2>
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                    <div className="bg-white p-4 rounded-lg shadow-sm">
-                        <p className="text-sm text-gray-600 mb-1">Número de clientes</p>
-                        <p className="text-2xl font-bold text-purple-600">80</p>
-                    </div>
-                    <div className="bg-white p-4 rounded-lg shadow-sm">
-                        <p className="text-sm text-gray-600 mb-1">Ticket médio</p>
-                        <p className="text-2xl font-bold text-purple-600">1.241,00</p>
-                    </div>
-                    <div className="bg-white p-4 rounded-lg shadow-sm">
-                        <p className="text-sm text-gray-600 mb-1">Frequência média</p>
-                        <p className="text-2xl font-bold text-purple-600">12</p>
-                    </div>
-                    <div className="bg-white p-4 rounded-lg shadow-sm">
-                        <p className="text-sm text-gray-600 mb-1">Tempo médio como cliente</p>
-                        <p className="text-2xl font-bold text-purple-600">1.3 anos</p>
-                    </div>
-                    <div className="bg-white p-4 rounded-lg shadow-sm">
-                        <p className="text-sm text-gray-600 mb-1">Principal canal de compra</p>
-                        <p className="text-2xl font-bold text-purple-600">canal 1</p>
+        <div className="h-screen bg-white flex flex-col overflow-hidden">
+            {/* Header */}
+            <div className="bg-white shadow-sm border-b border-gray-200 px-6 py-4 flex-shrink-0">
+                <div className="flex justify-between items-center">
+                    <div>
+                        <h2 className="text-xl font-semibold text-gray-800 mb-1">Mapa de Clusters</h2>
+                        <p className="text-sm text-gray-600">
+                            Clique em um cluster para visualizar detalhes
+                        </p>
                     </div>
                 </div>
             </div>
 
-            {/* Lista de Clientes e Ações Estratégicas */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                {/* Lista de Clientes */}
-                <div className="bg-white rounded-lg shadow-sm lg:col-span-2">
-                    <div className="p-5 border-b border-gray-200">
-                        <h3 className="text-lg font-semibold text-gray-800">Lista de clientes</h3>
-                    </div>
-                    <div className="p-5">
-                        {/* Barra de pesquisa */}
-                        <div className="relative mb-6">
-                            <input
-                                type="text"
-                                placeholder="Pesquisar por clientes..."
-                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-gray-50 text-gray-700 placeholder-gray-500"
-                            />
-                            <svg className="absolute left-3 top-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </div>
-
-                        {/* Tabela */}
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
-                                <thead>
-                                    <tr className="border-b border-gray-200">
-                                        <th className="text-left py-3 text-sm font-medium text-gray-700">Nome</th>
-                                        <th className="text-left py-3 text-sm font-medium text-gray-700">Localização</th>
-                                        <th className="text-left py-3 text-sm font-medium text-gray-700">Ticket médio</th>
-                                        <th className="text-left py-3 text-sm font-medium text-gray-700">Frequência</th>
-                                        <th className="text-left py-3 text-sm font-medium text-gray-700">Último pedido</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {clientes.map((cliente, index) => (
-                                        <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
-                                            <td className="py-3 text-sm text-gray-800 font-medium">{cliente.nome}</td>
-                                            <td className="py-3 text-sm text-gray-600">{cliente.localizacao}</td>
-                                            <td className="py-3 text-sm text-gray-800 font-medium">{cliente.ticketMedio}</td>
-                                            <td className="py-3 text-sm text-gray-600">{cliente.frequencia}</td>
-                                            <td className="py-3 text-sm text-gray-600">{cliente.ultimoPedido}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {/* Paginação */}
-                        <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
-                            <div className="flex items-center space-x-3">
-                                <span className="text-sm text-gray-600">Linhas por página:</span>
-                                <select className="text-sm border border-gray-300 rounded-md px-3 py-1.5 bg-white text-gray-700 focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                    <option>5</option>
-                                    <option>10</option>
-                                    <option>25</option>
-                                </select>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                                <span className="text-sm text-gray-600">1-9 de 9</span>
-                                <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                                    </svg>
-                                </button>
-                                <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Ações Estratégicas */}
-                <div className="bg-white rounded-lg shadow-sm">
-                    <div className="p-5 border-b border-gray-200">
-                        <div className="flex items-center">
-                            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
-                                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                </svg>
-                            </div>
-                            <h3 className="text-lg font-semibold text-gray-800">Ações estratégicas</h3>
-                        </div>
-                    </div>
-                    <div className="p-5">
-                        <ul className="space-y-4">
-                            {acoesEstrategicas.map((acao, index) => (
-                                <li key={index} className="flex items-start">
-                                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2.5 mr-4 flex-shrink-0"></div>
-                                    <span className="text-sm text-gray-700 leading-relaxed">{acao}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
+            {/* Cluster Network Chart - Full Screen */}
+            <div className="flex-1 bg-white overflow-hidden">
+                <ClusterNetworkChart
+                    clusters={filteredClusters}
+                    onClusterClick={handleClusterClick}
+                    selectedCluster={selectedCluster}
+                />
             </div>
 
-            {/* Gráficos */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Evolução de compras ao longo do tempo */}
-                <div className="bg-white rounded-lg shadow-sm">
-                    <div className="p-5 border-b border-gray-200">
-                        <h3 className="text-lg font-semibold text-gray-800">Evolução de compras ao longo do tempo</h3>
-                    </div>
-                    <div className="p-5">
-                        <PurchaseEvolutionChart
-                            data={purchaseData}
-                            width={500}
-                            height={300}
-                        />
-                    </div>
-                </div>
-
-                {/* Distribuição de ticket médio */}
-                <div className="bg-white rounded-lg shadow-sm">
-                    <div className="p-5 border-b border-gray-200">
-                        <h3 className="text-lg font-semibold text-gray-800">Distribuição de ticket médio</h3>
-                    </div>
-                    <div className="p-5">
-                        <TicketDistributionChart
-                            data={ticketData}
-                            width={500}
-                            height={300}
-                        />
-                    </div>
-                </div>
-            </div>
-
-            {/* Footer */}
-            <div className="mt-8 text-center">
-                <p className="text-sm text-gray-400">© Copyright 2025 Weedle</p>
-            </div>
+            {/* Cluster Drawer */}
+            <ClusterDrawer
+                cluster={selectedCluster}
+                isOpen={isDrawerOpen}
+                onClose={handleCloseDrawer}
+            />
         </div>
     );
 }
