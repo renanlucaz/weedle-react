@@ -45,7 +45,7 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
         return () => window.removeEventListener("resize", updateDimensions);
     }, []);
 
-    // Renderização inicial dos clusters
+    // Renderização inicial dos clusters (NÃO depende de selectedCluster!)
     useEffect(() => {
         if (!svgRef.current || clusters.length === 0) return;
 
@@ -64,19 +64,18 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
             .attr("class", "chart-group")
             .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        // Escala de tamanho dos círculos
+        // Escalas
         const sizeScale = d3
             .scaleSqrt()
             .domain(d3.extent(clusters, (d) => d.metrics.totalClients) as [number, number])
             .range([40, 120]);
 
-        // Escala de cores
         const colorScale = d3
             .scaleOrdinal()
             .domain(clusters.map((d) => d.id))
             .range(clusters.map((d) => d.color));
 
-        // Simulação com forces
+        // Simulação
         const simulation = d3
             .forceSimulation(clusters as any)
             .force("x", d3.forceX(innerWidth / 2).strength(0.1))
@@ -96,7 +95,7 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
             .attr("class", "cluster-circle")
             .style("cursor", "pointer");
 
-        // Círculos principais
+        // Círculo principal
         circles
             .append("circle")
             .attr("r", (d) => sizeScale(d.metrics.totalClients))
@@ -112,16 +111,15 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
                     .attr("opacity", 1)
                     .attr("stroke-width", 4);
             })
-            .on("mouseout", function (event, d) {
-                if (selectedCluster?.id !== d.id) {
-                    d3.select(this)
-                        .transition()
-                        .duration(200)
-                        .attr("opacity", 0.9)
-                        .attr("stroke-width", 3);
-                }
+            .on("mouseout", function () {
+                d3.select(this)
+                    .transition()
+                    .duration(200)
+                    .attr("opacity", 0.9)
+                    .attr("stroke-width", 3);
             })
             .on("click", function (_, d) {
+                // Apenas abre o drawer → não dispara re-render do gráfico
                 setSelectedCluster(d as Cluster);
             });
 
@@ -170,7 +168,7 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
         return () => {
             simulation.stop();
         };
-    }, [clusters, dimensions, selectedCluster]);
+    }, [clusters, dimensions]); // <-- selectedCluster removido daqui ✅
 
     // Botões de zoom
     const handleZoomIn = () => {
@@ -248,52 +246,21 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
                     className="w-10 h-10 bg-white rounded-lg shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
                     title="Zoom In"
                 >
-                    <svg
-                        className="w-5 h-5 text-gray-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                        />
-                    </svg>
+                    ➕
                 </button>
                 <button
                     onClick={handleZoomOut}
                     className="w-10 h-10 bg-white rounded-lg shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
                     title="Zoom Out"
                 >
-                    <svg
-                        className="w-5 h-5 text-gray-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 12H6" />
-                    </svg>
+                    ➖
                 </button>
                 <button
                     onClick={handleReset}
                     className="w-10 h-10 bg-white rounded-lg shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
                     title="Reset View"
                 >
-                    <svg
-                        className="w-5 h-5 text-gray-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                        />
-                    </svg>
+                    ⟳
                 </button>
             </div>
 
