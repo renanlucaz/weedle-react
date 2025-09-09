@@ -20,21 +20,16 @@ interface Cluster {
 
 interface ClusterNetworkChartProps {
     clusters: Cluster[];
-    onClusterClick: (cluster: Cluster) => void;
-    selectedCluster?: Cluster | null;
 }
 
-export default function ClusterNetworkChart({
-    clusters,
-    onClusterClick,
-    selectedCluster,
-}: ClusterNetworkChartProps) {
+export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartProps) {
     const svgRef = useRef<SVGSVGElement>(null);
     const zoomBehavior = useRef<d3.ZoomBehavior<SVGSVGElement, unknown>>();
     const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
     const [zoom, setZoom] = useState(1);
+    const [selectedCluster, setSelectedCluster] = useState<Cluster | null>(null);
 
-    // Atualizar dimensões ao redimensionar
+    // Atualizar dimensões
     useEffect(() => {
         const updateDimensions = () => {
             const container = svgRef.current?.parentElement;
@@ -45,7 +40,6 @@ export default function ClusterNetworkChart({
                 });
             }
         };
-
         updateDimensions();
         window.addEventListener("resize", updateDimensions);
         return () => window.removeEventListener("resize", updateDimensions);
@@ -127,9 +121,8 @@ export default function ClusterNetworkChart({
                         .attr("stroke-width", 3);
                 }
             })
-            .on("click", function (event, d) {
-                event.stopPropagation();
-                onClusterClick(d as Cluster);
+            .on("click", function (_, d) {
+                setSelectedCluster(d as Cluster);
             });
 
         // Nome do cluster
@@ -158,21 +151,12 @@ export default function ClusterNetworkChart({
             .attr("pointer-events", "none")
             .text((d) => `${d.metrics.totalClients} clientes`);
 
-        // Atualizar posições da simulação
+        // Atualizar posições
         simulation.on("tick", () => {
             circles.attr("transform", (d: any) => `translate(${d.x},${d.y})`);
         });
 
-        // Animação de entrada
-        circles
-            .selectAll("circle, text")
-            .attr("opacity", 0)
-            .transition()
-            .duration(800)
-            .delay((_, i) => i * 100)
-            .attr("opacity", 0.9);
-
-        // Configurar zoom/pan
+        // Zoom/pan
         zoomBehavior.current = d3
             .zoom<SVGSVGElement, unknown>()
             .scaleExtent([0.1, 3])
@@ -181,39 +165,12 @@ export default function ClusterNetworkChart({
                 setZoom(event.transform.k);
             });
 
-        svg.call(zoomBehavior.current as any);
-        svg.style("cursor", "grab");
+        svg.call(zoomBehavior.current as any).style("cursor", "grab");
 
         return () => {
             simulation.stop();
         };
-    }, [clusters, dimensions, onClusterClick]);
-
-    // Atualizar destaque do cluster selecionado
-    useEffect(() => {
-        if (!svgRef.current) return;
-
-        const circles = d3.select(svgRef.current).selectAll(".cluster-circle");
-
-        // Reset
-        circles
-            .select("circle")
-            .attr("opacity", 0.9)
-            .attr("stroke-width", 3)
-            .attr("stroke", "#fff")
-            .style("filter", "drop-shadow(0 4px 8px rgba(0,0,0,0.1))");
-
-        // Highlight
-        if (selectedCluster) {
-            circles
-                .filter((d: any) => d.id === selectedCluster.id)
-                .select("circle")
-                .attr("opacity", 1)
-                .attr("stroke-width", 5)
-                .attr("stroke", "#4F46E5")
-                .style("filter", "drop-shadow(0 8px 16px rgba(79,70,229,0.3))");
-        }
-    }, [selectedCluster]);
+    }, [clusters, dimensions, selectedCluster]);
 
     // Botões de zoom
     const handleZoomIn = () => {
@@ -243,6 +200,46 @@ export default function ClusterNetworkChart({
     return (
         <div className="w-full h-full bg-gradient-to-br from-gray-50 to-gray-100 relative">
             <svg ref={svgRef} className="w-full h-full block" />
+
+            {/* Drawer lateral */}
+            <div
+                className={`fixed top-0 right-0 h-full w-80 bg-white shadow-2xl transform transition-transform duration-300 z-50 ${selectedCluster ? "translate-x-0" : "translate-x-full"
+                    }`}
+            >
+                <div className="flex justify-between items-center p-4 border-b">
+                    <h2 className="text-lg font-semibold">{selectedCluster?.name}</h2>
+                    <button
+                        onClick={() => setSelectedCluster(null)}
+                        className="text-gray-500 hover:text-gray-700"
+                    >
+                        ✕
+                    </button>
+                </div>
+                {selectedCluster && (
+                    <div className="p-4 space-y-4">
+                        <p className="text-gray-600">{selectedCluster.description}</p>
+                        <div className="space-y-2 text-sm">
+                            <p><strong>Total de Clientes:</strong> {selectedCluster.metrics.totalClients}</p>
+                            <p><strong>Ticket Médio:</strong> {selectedCluster.metrics.avgTicket}</p>
+                            <p><strong>Frequência:</strong> {selectedCluster.metrics.frequency}</p>
+                            <p><strong>Último Pedido:</strong> {selectedCluster.metrics.lastOrder}</p>
+                        </div>
+                        <div>
+                            <p className="font-semibold mb-1">Palavras-chave:</p>
+                            <div className="flex flex-wrap gap-2">
+                                {selectedCluster.keywords.map((k) => (
+                                    <span
+                                        key={k}
+                                        className="px-2 py-1 text-xs bg-indigo-100 text-indigo-700 rounded-lg"
+                                    >
+                                        {k}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
 
             {/* Controles de Zoom */}
             <div className="absolute top-4 right-4 flex flex-col gap-2">
