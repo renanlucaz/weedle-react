@@ -119,9 +119,28 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
                     .attr("stroke-width", 3);
             })
             .on("click", function (_, d) {
-                // Apenas abre o drawer → não dispara re-render do gráfico
+                const drawerWidth = 320; // largura do drawer
+                const svg = d3.select(svgRef.current);
+                const { width, height } = dimensions;
+
+                // centro ajustado (considerando o drawer à direita)
+                const centerX = (width - drawerWidth) / 2;
+                const centerY = height / 2;
+
+                // aplica a transformação
+                const transform = d3.zoomIdentity
+                    .translate(centerX, centerY)
+                    .scale(zoom)
+                    .translate(-d.x, -d.y);
+
+                svg.transition().duration(500).call(
+                    zoomBehavior.current!.transform,
+                    transform
+                );
+
                 setSelectedCluster(d as Cluster);
             });
+
 
         // Nome do cluster
         circles
