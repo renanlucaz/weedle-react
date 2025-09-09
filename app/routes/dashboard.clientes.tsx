@@ -250,6 +250,7 @@ export default function DashboardClientes() {
                             width={top10Width}
                             height={580}
                             color="#8b5cf6"
+                            fontSize={16}
                             showValues={false}
                         />
                     </div>

@@ -7,6 +7,13 @@ interface Top10BarChartProps {
     height?: number;
     color?: string;
     showValues?: boolean;
+    fontSize?: number;
+    margin?: {
+        top?: number;
+        right?: number;
+        bottom?: number;
+        left?: number;
+    };
 }
 
 export default function Top10BarChart({
@@ -14,7 +21,9 @@ export default function Top10BarChart({
     width = 500,
     height = 300,
     color = "#8b5cf6",
-    showValues = true
+    showValues = true,
+    fontSize = 12,
+    margin = { top: 5, right: 40, bottom: 200, left: 60 }
 }: Top10BarChartProps) {
     const svgRef = useRef<SVGSVGElement>(null);
 
@@ -25,9 +34,8 @@ export default function Top10BarChart({
         d3.select(svgRef.current).selectAll("*").remove();
 
         const svg = d3.select(svgRef.current);
-        const margin = { top: 5, right: 40, bottom: 200, left: 60 };
-        const chartWidth = width - margin.left - margin.right;
-        const chartHeight = height - margin.top - margin.bottom;
+        const chartWidth = width - (margin.left || 0) - (margin.right || 0);
+        const chartHeight = height - (margin.top || 0) - (margin.bottom || 0);
 
         // Escalas
         const xScale = d3.scaleBand()
@@ -57,19 +65,8 @@ export default function Top10BarChart({
             .selectAll(".domain")
             .style("stroke", "none");
 
-        // Paleta de cores roxa com gradiente suave (1º lugar mais escuro, último mais claro)
-        const colorPalette = [
-            "#8b5cf6", // 1º lugar - cor principal
-            "#8b5cf6", // 2º lugar - mesma cor
-            "#9d7bfa", // 3º lugar - ligeiramente mais claro
-            "#a78bfa", // 4º lugar - mais claro
-            "#b794f6", // 5º lugar - mais claro
-            "#c4b5fd", // 6º lugar - mais claro
-            "#d1c7fc", // 7º lugar - mais claro
-            "#ddd6fe", // 8º lugar - mais claro
-            "#e6ddfe", // 9º lugar - mais claro
-            "#ede9fe"  // 10º lugar - mais claro
-        ];
+        // Cor única roxa para todas as barras
+        const barColor = color || "#8b5cf6";
 
         // Adicionar as barras verticais
         g.selectAll(".bar")
@@ -81,19 +78,15 @@ export default function Top10BarChart({
             .attr("y", d => yScale(d.value))
             .attr("width", xScale.bandwidth())
             .attr("height", d => chartHeight - yScale(d.value))
-            .attr("fill", (d, i) => colorPalette[i % colorPalette.length])
+            .attr("fill", barColor)
             .attr("rx", 4)
             .attr("ry", 4)
             .on("mouseover", function (event, d) {
-                const currentIndex = data.findIndex(item => item.label === d.label);
-                const currentColor = colorPalette[currentIndex % colorPalette.length];
-                d3.select(this).attr("fill", d3.color(currentColor)?.brighter(0.2)?.toString() || currentColor);
+                d3.select(this).attr("fill", d3.color(barColor)?.brighter(0.2)?.toString() || barColor);
                 showTooltip(event, `${d.label}: ${d.value.toLocaleString()}`);
             })
             .on("mouseout", function (event, d) {
-                const currentIndex = data.findIndex(item => item.label === d.label);
-                const currentColor = colorPalette[currentIndex % colorPalette.length];
-                d3.select(this).attr("fill", currentColor);
+                d3.select(this).attr("fill", barColor);
                 hideTooltip();
             });
 
@@ -107,6 +100,8 @@ export default function Top10BarChart({
                 .attr("x", d => (xScale(d.label) || 0) + xScale.bandwidth() / 2)
                 .attr("y", d => yScale(d.value) - 5)
                 .attr("text-anchor", "middle")
+                .style("font-size", `${fontSize}px`)
+                .style("fill", "#6b7280")
         }
 
         // Adicionar eixo X (labels das barras)
@@ -114,18 +109,18 @@ export default function Top10BarChart({
             .attr("transform", `translate(0,${chartHeight})`)
             .call(d3.axisBottom(xScale).tickSize(0))
             .selectAll("text")
-            .style("font-size", "16px")
+            .style("font-size", `${fontSize}px`)
             .style("fill", "#6b7280")
             .style("text-anchor", "end")
             .attr("dx", "-0.5em")
             .attr("dy", "0.5em")
             .attr("transform", "rotate(-45)")
             .style("cursor", "pointer")
-            .text(function (d) {
+            .text(function (d: any) {
                 const text = d.toString();
                 return text.length > 15 ? text.substring(0, 15) + "..." : text;
             })
-            .on("mouseover", function (event, d) {
+            .on("mouseover", function (event: any, d: any) {
                 const dataItem = data.find(item => item.label === d);
                 const tooltipText = dataItem?.fullLabel || d;
                 showTooltip(event, tooltipText);
@@ -138,7 +133,7 @@ export default function Top10BarChart({
         g.append("g")
             .call(d3.axisLeft(yScale).ticks(4).tickSize(0))
             .selectAll("text")
-            .style("font-size", "16px")
+            .style("font-size", `${fontSize}px`)
             .style("fill", "#6b7280");
 
         // Remover as linhas pretas dos eixos (domain)
@@ -153,7 +148,7 @@ export default function Top10BarChart({
             .style("color", "white")
             .style("padding", "8px 12px")
             .style("border-radius", "6px")
-            .style("font-size", "12px")
+            .style("font-size", `${fontSize}px`)
             .style("pointer-events", "none")
             .style("opacity", 0)
             .style("z-index", "1000");
@@ -177,7 +172,7 @@ export default function Top10BarChart({
         return () => {
             d3.select("body").selectAll(".tooltip").remove();
         };
-    }, [data, width, height, color, showValues]);
+    }, [data, width, height, color, showValues, fontSize, margin]);
 
     return (
         <div className="w-full h-full">
