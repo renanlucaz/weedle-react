@@ -78,13 +78,15 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
         // Simulação
         const simulation = d3
             .forceSimulation(clusters as any)
-            .force("x", d3.forceX(innerWidth / 2).strength(0.1))
-            .force("y", d3.forceY(innerHeight / 2).strength(0.1))
+            .force("x", d3.forceX(innerWidth / 2).strength(0.05))
+            .force("y", d3.forceY(innerHeight / 2).strength(0.05))
             .force(
                 "collision",
                 d3.forceCollide().radius((d: any) => sizeScale(d.metrics.totalClients) + 10)
             )
-            .force("charge", d3.forceManyBody().strength(-300));
+            .force("charge", d3.forceManyBody().strength(-200))
+            .alpha(0.6)
+            .alphaDecay(0.015);
 
         // Grupos de clusters
         const circles = g
