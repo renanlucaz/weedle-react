@@ -58,7 +58,7 @@ export default function ClusterDrawer({ cluster, isOpen, onClose }: ClusterDrawe
                     }`}
             >
                 {/* Header */}
-                <div className="bg-gradient-to-r from-purple-500 to-blue-600 text-white p-6">
+                <div className="text-white p-6">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
                             <div
@@ -98,35 +98,6 @@ export default function ClusterDrawer({ cluster, isOpen, onClose }: ClusterDrawe
                         <div className="bg-gray-50 rounded-lg p-4 text-center">
                             <div className="text-2xl font-bold text-orange-600">{cluster.metrics.lastOrder}</div>
                             <div className="text-sm text-gray-600">Último Pedido</div>
-                        </div>
-                    </div>
-
-                    {/* Palavras-chave */}
-                    <div className="mb-6">
-                        <div className="flex items-center mb-4">
-                            <h3 className="text-lg font-semibold text-gray-800">Palavras-chave</h3>
-                            <svg className="w-4 h-4 ml-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <p className="text-sm text-gray-600 mb-3">
-                            Confira as expressões mais comuns encontradas nas descrições dos clientes deste cluster.
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                            {cluster.keywords.map((keyword, index) => (
-                                <span
-                                    key={index}
-                                    className="px-3 py-1 rounded-full text-sm font-medium text-white"
-                                    style={{
-                                        backgroundColor: [
-                                            '#10B981', '#F59E0B', '#EF4444', '#8B5CF6',
-                                            '#06B6D4', '#84CC16', '#F97316', '#EC4899'
-                                        ][index % 8]
-                                    }}
-                                >
-                                    {keyword}
-                                </span>
-                            ))}
                         </div>
                     </div>
 
@@ -172,21 +143,6 @@ export default function ClusterDrawer({ cluster, isOpen, onClose }: ClusterDrawe
                                 para maximizar o valor do cliente ao longo do tempo.
                             </p>
                         </div>
-                    </div>
-                </div>
-
-                {/* Footer */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gray-50 px-6 py-4 border-t">
-                    <div className="flex justify-between items-center">
-                        <div className="text-sm text-gray-500">
-                            Última atualização: {new Date().toLocaleDateString('pt-BR')}
-                        </div>
-                        <button
-                            onClick={onClose}
-                            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                        >
-                            Fechar
-                        </button>
                     </div>
                 </div>
             </div>

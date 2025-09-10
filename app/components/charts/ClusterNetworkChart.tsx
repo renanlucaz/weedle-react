@@ -24,7 +24,7 @@ interface ClusterNetworkChartProps {
 
 export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartProps) {
     const svgRef = useRef<SVGSVGElement>(null);
-    const zoomBehavior = useRef<d3.ZoomBehavior<SVGSVGElement, unknown>>();
+    const zoomBehavior = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null);
     const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
     const [zoom, setZoom] = useState(1);
     const [selectedCluster, setSelectedCluster] = useState<Cluster | null>(null);
@@ -68,7 +68,7 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
         const sizeScale = d3
             .scaleSqrt()
             .domain(d3.extent(clusters, (d) => d.metrics.totalClients) as [number, number])
-            .range([40, 120]);
+            .range([60, 140]);
 
         const colorScale = d3
             .scaleOrdinal()
@@ -134,7 +134,7 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
                     .translate(-d.x, -d.y);
 
                 svg.transition().duration(500).call(
-                    zoomBehavior.current!.transform,
+                    zoomBehavior.current!.transform as any,
                     transform
                 );
 
@@ -142,31 +142,55 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
             });
 
 
-        // Nome do cluster
-        circles
-            .append("text")
-            .attr("text-anchor", "middle")
-            .attr("dy", "0.35em")
-            .attr("fill", "#fff")
-            .attr("font-size", (d) =>
-                Math.min(14, sizeScale(d.metrics.totalClients) / 4)
-            )
-            .attr("font-weight", "bold")
-            .attr("pointer-events", "none")
-            .text((d) => d.name);
+        // Nome do cluster com quebra de texto
+        circles.each(function (d: any) {
+            const circle = d3.select(this);
+            const radius = sizeScale(d.metrics.totalClients);
+            const fontSize = Math.min(16, radius / 2);
+            const maxWidth = radius * 1.6; // Largura máxima baseada no raio
 
-        // Número de clientes
-        circles
-            .append("text")
-            .attr("text-anchor", "middle")
-            .attr("dy", "1.2em")
-            .attr("fill", "#fff")
-            .attr("font-size", (d) =>
-                Math.min(10, sizeScale(d.metrics.totalClients) / 6)
-            )
-            .attr("font-weight", "500")
-            .attr("pointer-events", "none")
-            .text((d) => `${d.metrics.totalClients} clientes`);
+            // Função para quebrar texto
+            const wrapText = (text: string, width: number) => {
+                const words = text.split(' ');
+                const lines = [];
+                let currentLine = '';
+
+                words.forEach(word => {
+                    const testLine = currentLine + (currentLine ? ' ' : '') + word;
+                    const testWidth = testLine.length * (fontSize * 0.6); // Aproximação da largura
+
+                    if (testWidth > width && currentLine) {
+                        lines.push(currentLine);
+                        currentLine = word;
+                    } else {
+                        currentLine = testLine;
+                    }
+                });
+
+                if (currentLine) {
+                    lines.push(currentLine);
+                }
+
+                return lines;
+            };
+
+            const lines = wrapText(d.name, maxWidth);
+            const lineHeight = fontSize * 1.2;
+            const totalHeight = lines.length * lineHeight;
+            const startY = -totalHeight / 2 + lineHeight / 2;
+
+            lines.forEach((line, i) => {
+                circle.append("text")
+                    .attr("text-anchor", "middle")
+                    .attr("dy", startY + (i * lineHeight))
+                    .attr("fill", "#fff")
+                    .attr("font-size", fontSize)
+                    .attr("font-weight", "bold")
+                    .attr("pointer-events", "none")
+                    .text(line);
+            });
+        });
+
 
         // Atualizar posições
         simulation.on("tick", () => {
@@ -220,42 +244,97 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
 
             {/* Drawer lateral */}
             <div
-                className={`fixed top-0 right-0 h-full w-80 bg-white shadow-2xl transform transition-transform duration-300 z-50 ${selectedCluster ? "translate-x-0" : "translate-x-full"
+                className={`fixed top-0 right-0 h-full w-[450px] bg-white shadow-2xl transform transition-transform duration-300 z-50 ${selectedCluster ? "translate-x-0" : "translate-x-full"
                     }`}
             >
-                <div className="flex justify-between items-center p-4 border-b">
-                    <h2 className="text-lg font-semibold">{selectedCluster?.name}</h2>
-                    <button
-                        onClick={() => setSelectedCluster(null)}
-                        className="text-gray-500 hover:text-gray-700"
-                    >
-                        ✕
-                    </button>
-                </div>
-                {selectedCluster && (
-                    <div className="p-4 space-y-4">
-                        <p className="text-gray-600">{selectedCluster.description}</p>
-                        <div className="space-y-2 text-sm">
-                            <p><strong>Total de Clientes:</strong> {selectedCluster.metrics.totalClients}</p>
-                            <p><strong>Ticket Médio:</strong> {selectedCluster.metrics.avgTicket}</p>
-                            <p><strong>Frequência:</strong> {selectedCluster.metrics.frequency}</p>
-                            <p><strong>Último Pedido:</strong> {selectedCluster.metrics.lastOrder}</p>
+                {/* Header */}
+                <div className="bg-white border-b border-gray-200 p-6">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                            <div
+                                className="w-4 h-4 rounded-full mr-3"
+                                style={{ backgroundColor: selectedCluster?.color }}
+                            />
+                            <h2 className="text-xl font-bold text-gray-800">{selectedCluster?.name}</h2>
                         </div>
-                        <div>
-                            <p className="font-semibold mb-1">Palavras-chave:</p>
-                            <div className="flex flex-wrap gap-2">
-                                {selectedCluster.keywords.map((k) => (
-                                    <span
-                                        key={k}
-                                        className="px-2 py-1 text-xs bg-indigo-100 text-indigo-700 rounded-lg"
-                                    >
-                                        {k}
-                                    </span>
-                                ))}
+                        <button
+                            onClick={() => setSelectedCluster(null)}
+                            className="text-gray-500 hover:text-gray-700 transition-colors p-1 rounded-full hover:bg-gray-100"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <p className="text-gray-600 mt-2 text-sm">{selectedCluster?.description}</p>
+                </div>
+
+                {/* Content */}
+                <div className="p-6 overflow-y-auto h-[calc(100vh-120px)]">
+                    {/* Métricas Principais */}
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div className="bg-gray-50 rounded-lg p-4 text-center">
+                            <div className="text-2xl font-bold text-purple-600">{selectedCluster?.metrics.totalClients}</div>
+                            <div className="text-sm text-gray-600">Total de Clientes</div>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-4 text-center">
+                            <div className="text-2xl font-bold text-green-600">{selectedCluster?.metrics.avgTicket}</div>
+                            <div className="text-sm text-gray-600">Ticket Médio</div>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-4 text-center">
+                            <div className="text-2xl font-bold text-blue-600">{selectedCluster?.metrics.frequency}</div>
+                            <div className="text-sm text-gray-600">Frequência</div>
+                        </div>
+                        <div className="bg-gray-50 rounded-lg p-4 text-center">
+                            <div className="text-2xl font-bold text-orange-600">{selectedCluster?.metrics.lastOrder}</div>
+                            <div className="text-sm text-gray-600">Último Pedido</div>
+                        </div>
+                    </div>
+
+                    {/* Ações Estratégicas */}
+                    <div className="mb-6">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-4">Ações Estratégicas Recomendadas</h3>
+                        <div className="space-y-3">
+                            <div className="flex items-start p-3 bg-blue-50 rounded-lg">
+                                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0" />
+                                <p className="text-sm text-gray-700">
+                                    Programa de fidelidade com cashback ou pontos extras para clientes frequentes
+                                </p>
+                            </div>
+                            <div className="flex items-start p-3 bg-green-50 rounded-lg">
+                                <div className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0" />
+                                <p className="text-sm text-gray-700">
+                                    Ofertas exclusivas de pré-lançamento de produtos
+                                </p>
+                            </div>
+                            <div className="flex items-start p-3 bg-purple-50 rounded-lg">
+                                <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0" />
+                                <p className="text-sm text-gray-700">
+                                    Convite para eventos VIP ou experiências personalizadas
+                                </p>
+                            </div>
+                            <div className="flex items-start p-3 bg-orange-50 rounded-lg">
+                                <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0" />
+                                <p className="text-sm text-gray-700">
+                                    Envio de cupons personalizados baseados no histórico de compras
+                                </p>
                             </div>
                         </div>
                     </div>
-                )}
+
+                    {/* Comportamento do Cluster */}
+                    <div>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-4">Análise Comportamental</h3>
+                        <div className="bg-gray-50 rounded-lg p-4">
+                            <p className="text-sm text-gray-700 leading-relaxed">
+                                Este cluster representa um grupo de clientes com características similares de consumo.
+                                Eles demonstram um padrão consistente de compras e respondem bem a ofertas direcionadas.
+                                A estratégia de marketing deve focar em personalização e criação de experiências únicas
+                                para maximizar o valor do cliente ao longo do tempo.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* Controles de Zoom */}

@@ -43,7 +43,7 @@ export default function Clusters() {
             y: 0,
             description: "Clientes de alto valor com frequência de compra elevada e ticket médio superior",
             metrics: {
-                totalClients: 45,
+                totalClients: 100,
                 avgTicket: "R$ 2.450,00",
                 frequency: "5x/semana",
                 lastOrder: "15/01/2025"
@@ -93,7 +93,7 @@ export default function Clusters() {
             y: 0,
             description: "Clientes com baixa frequência mas potencial de crescimento",
             metrics: {
-                totalClients: 89,
+                totalClients: 100,
                 avgTicket: "R$ 850,00",
                 frequency: "1x/mês",
                 lastOrder: "05/01/2025"
@@ -118,7 +118,7 @@ export default function Clusters() {
             y: 0,
             description: "Clientes recém-cadastrados em processo de onboarding",
             metrics: {
-                totalClients: 67,
+                totalClients: 130,
                 avgTicket: "R$ 650,00",
                 frequency: "1x/mês",
                 lastOrder: "20/01/2025"
@@ -143,7 +143,7 @@ export default function Clusters() {
             y: 0,
             description: "Empresas com volume alto de compras e contratos especiais",
             metrics: {
-                totalClients: 23,
+                totalClients: 100,
                 avgTicket: "R$ 5.200,00",
                 frequency: "3x/semana",
                 lastOrder: "19/01/2025"
@@ -168,7 +168,7 @@ export default function Clusters() {
             y: 0,
             description: "Clientes que compram apenas em períodos específicos do ano",
             metrics: {
-                totalClients: 34,
+                totalClients: 100,
                 avgTicket: "R$ 1.800,00",
                 frequency: "2x/ano",
                 lastOrder: "12/12/2024"
