@@ -221,20 +221,6 @@ export default function DashboardClientes() {
                 </div>
             </div>
 
-            {/* Tabela de Clientes */}
-            <div className="mt-6 mb-6">
-                <DataTable
-                    data={clientesData}
-                    columns={clientesColumns}
-                    title="Lista de clientes"
-                    searchPlaceholder="Pesquisar clientes..."
-                    itemsPerPage={10}
-                    height="500px"
-                />
-            </div>
-
-
-
             {/* Novos Gráficos */}
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-6">
                 {/* TOP 10 - Marca TOTVS */}
@@ -272,6 +258,18 @@ export default function DashboardClientes() {
                         />
                     </div>
                 </div>
+            </div>
+
+            {/* Tabela de Clientes */}
+            <div className="mt-6 mb-6">
+                <DataTable
+                    data={clientesData}
+                    columns={clientesColumns}
+                    title="Lista de clientes"
+                    searchPlaceholder="Pesquisar clientes..."
+                    itemsPerPage={10}
+                    height="500px"
+                />
             </div>
         </div>
     );
