@@ -25,29 +25,13 @@ interface ClusterNetworkChartProps {
 export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartProps) {
     const svgRef = useRef<SVGSVGElement>(null);
     const zoomBehavior = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null);
-    const simulationRef = useRef<d3.Simulation<Cluster, undefined> | null>(null);
-    const isMountedRef = useRef(true);
     const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
     const [zoom, setZoom] = useState(1);
     const [selectedCluster, setSelectedCluster] = useState<Cluster | null>(null);
 
-    // Gerenciar estado de montagem do componente
-    useEffect(() => {
-        isMountedRef.current = true;
-        return () => {
-            isMountedRef.current = false;
-            // Parar simulação quando componente for desmontado
-            if (simulationRef.current) {
-                simulationRef.current.stop();
-                simulationRef.current = null;
-            }
-        };
-    }, []);
-
     // Atualizar dimensões
     useEffect(() => {
         const updateDimensions = () => {
-            if (!isMountedRef.current) return;
             const container = svgRef.current?.parentElement;
             if (container) {
                 setDimensions({
@@ -63,16 +47,10 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
 
     // Renderização inicial dos clusters (NÃO depende de selectedCluster!)
     useEffect(() => {
-        if (!svgRef.current || clusters.length === 0 || !isMountedRef.current) return;
+        if (!svgRef.current || clusters.length === 0) return;
 
         const svg = d3.select(svgRef.current);
         svg.selectAll("*").remove();
-
-        // Parar simulação anterior se existir
-        if (simulationRef.current) {
-            simulationRef.current.stop();
-            simulationRef.current = null;
-        }
 
         const { width, height } = dimensions;
         const margin = { top: 20, right: 20, bottom: 20, left: 20 };
@@ -100,15 +78,13 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
         // Simulação
         const simulation = d3
             .forceSimulation(clusters as any)
-            .force("x", d3.forceX(innerWidth / 2).strength(0.05))
-            .force("y", d3.forceY(innerHeight / 2).strength(0.05))
+            .force("x", d3.forceX(innerWidth / 2).strength(0.1))
+            .force("y", d3.forceY(innerHeight / 2).strength(0.1))
             .force(
                 "collision",
                 d3.forceCollide().radius((d: any) => sizeScale(d.metrics.totalClients) + 10)
             )
-            .force("charge", d3.forceManyBody().strength(-200))
-            .alpha(0.6)
-            .alphaDecay(0.015);
+            .force("charge", d3.forceManyBody().strength(-300));
 
         // Grupos de clusters
         const circles = g
@@ -218,10 +194,6 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
 
         // Atualizar posições
         simulation.on("tick", () => {
-            if (!isMountedRef.current) {
-                simulation.stop();
-                return;
-            }
             circles.attr("transform", (d: any) => `translate(${d.x},${d.y})`);
         });
 
@@ -237,16 +209,13 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
         svg.call(zoomBehavior.current as any).style("cursor", "grab");
 
         return () => {
-            if (simulationRef.current) {
-                simulationRef.current.stop();
-                simulationRef.current = null;
-            }
+            simulation.stop();
         };
     }, [clusters, dimensions]); // <-- selectedCluster removido daqui ✅
 
     // Botões de zoom
     const handleZoomIn = () => {
-        if (!svgRef.current || !zoomBehavior.current || !isMountedRef.current) return;
+        if (!svgRef.current || !zoomBehavior.current) return;
         d3.select(svgRef.current)
             .transition()
             .duration(300)
@@ -254,7 +223,7 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
     };
 
     const handleZoomOut = () => {
-        if (!svgRef.current || !zoomBehavior.current || !isMountedRef.current) return;
+        if (!svgRef.current || !zoomBehavior.current) return;
         d3.select(svgRef.current)
             .transition()
             .duration(300)
@@ -262,7 +231,7 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
     };
 
     const handleReset = () => {
-        if (!svgRef.current || !zoomBehavior.current || !isMountedRef.current) return;
+        if (!svgRef.current || !zoomBehavior.current) return;
         d3.select(svgRef.current)
             .transition()
             .duration(300)
