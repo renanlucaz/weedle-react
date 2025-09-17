@@ -58,7 +58,7 @@ export default function ClusterDrawer({ cluster, isOpen, onClose }: ClusterDrawe
                     }`}
             >
                 {/* Header */}
-                <div className="text-white p-6">
+                <div className="bg-gradient-to-br from-purple-600 to-purple-700 text-white p-6">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
                             <div
@@ -69,7 +69,7 @@ export default function ClusterDrawer({ cluster, isOpen, onClose }: ClusterDrawe
                         </div>
                         <button
                             onClick={onClose}
-                            className="text-white hover:text-gray-200 transition-colors"
+                            className="text-white hover:text-purple-200 transition-colors"
                         >
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -83,49 +83,49 @@ export default function ClusterDrawer({ cluster, isOpen, onClose }: ClusterDrawe
                 <div className="p-6 overflow-y-auto h-[calc(100vh-120px)]">
                     {/* Métricas Principais */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                        <div className="bg-gray-50 rounded-lg p-4 text-center">
+                        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 text-center border border-purple-200">
                             <div className="text-2xl font-bold text-purple-600">{cluster.metrics.totalClients}</div>
-                            <div className="text-sm text-gray-600">Total de Clientes</div>
+                            <div className="text-sm text-purple-700">Total de Clientess</div>
                         </div>
-                        <div className="bg-gray-50 rounded-lg p-4 text-center">
-                            <div className="text-2xl font-bold text-green-600">{cluster.metrics.avgTicket}</div>
-                            <div className="text-sm text-gray-600">Ticket Médio</div>
+                        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 text-center border border-purple-200">
+                            <div className="text-2xl font-bold text-purple-800">{cluster.metrics.avgTicket}</div>
+                            <div className="text-sm text-purple-800">Ticket Médio</div>
                         </div>
-                        <div className="bg-gray-50 rounded-lg p-4 text-center">
-                            <div className="text-2xl font-bold text-blue-600">{cluster.metrics.frequency}</div>
-                            <div className="text-sm text-gray-600">Frequência</div>
+                        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 text-center border border-purple-200">
+                            <div className="text-2xl font-bold text-purple-800">{cluster.metrics.frequency}</div>
+                            <div className="text-sm text-purple-800">Frequência</div>
                         </div>
-                        <div className="bg-gray-50 rounded-lg p-4 text-center">
-                            <div className="text-2xl font-bold text-orange-600">{cluster.metrics.lastOrder}</div>
-                            <div className="text-sm text-gray-600">Último Pedido</div>
+                        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 text-center border border-purple-200">
+                            <div className="text-2xl font-bold text-purple-800">{cluster.metrics.lastOrder}</div>
+                            <div className="text-sm text-purple-800">Último Pedido</div>
                         </div>
                     </div>
 
                     {/* Ações Estratégicas */}
                     <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-4">Ações Estratégicas Recomendadas</h3>
+                        <h3 className="text-lg font-semibold text-purple-800 mb-4">Ações Estratégicas Recomendadas</h3>
                         <div className="space-y-3">
-                            <div className="flex items-start p-3 bg-blue-50 rounded-lg">
-                                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                                <p className="text-sm text-gray-700">
+                            <div className="flex items-start p-3 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200">
+                                <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0" />
+                                <p className="text-sm text-purple-700">
                                     Programa de fidelidade com cashback ou pontos extras para clientes frequentes
                                 </p>
                             </div>
-                            <div className="flex items-start p-3 bg-green-50 rounded-lg">
-                                <div className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                                <p className="text-sm text-gray-700">
+                            <div className="flex items-start p-3 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200">
+                                <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0" />
+                                <p className="text-sm text-purple-700">
                                     Ofertas exclusivas de pré-lançamento de produtos
                                 </p>
                             </div>
-                            <div className="flex items-start p-3 bg-purple-50 rounded-lg">
+                            <div className="flex items-start p-3 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200">
                                 <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                                <p className="text-sm text-gray-700">
+                                <p className="text-sm text-purple-700">
                                     Convite para eventos VIP ou experiências personalizadas
                                 </p>
                             </div>
-                            <div className="flex items-start p-3 bg-orange-50 rounded-lg">
-                                <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                                <p className="text-sm text-gray-700">
+                            <div className="flex items-start p-3 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200">
+                                <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0" />
+                                <p className="text-sm text-purple-700">
                                     Envio de cupons personalizados baseados no histórico de compras
                                 </p>
                             </div>
@@ -134,9 +134,9 @@ export default function ClusterDrawer({ cluster, isOpen, onClose }: ClusterDrawe
 
                     {/* Comportamento do Cluster */}
                     <div>
-                        <h3 className="text-lg font-semibold text-gray-800 mb-4">Análise Comportamental</h3>
-                        <div className="bg-gray-50 rounded-lg p-4">
-                            <p className="text-sm text-gray-700 leading-relaxed">
+                        <h3 className="text-lg font-semibold text-purple-800 mb-4">Análise Comportamental</h3>
+                        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
+                            <p className="text-sm text-purple-700 leading-relaxed">
                                 Este cluster representa um grupo de clientes com características similares de consumo.
                                 Eles demonstram um padrão consistente de compras e respondem bem a ofertas direcionadas.
                                 A estratégia de marketing deve focar em personalização e criação de experiências únicas
