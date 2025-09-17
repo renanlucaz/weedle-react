@@ -52,8 +52,25 @@ export default function HorizontalBarChartHorizontal({
                 .tickFormat(() => "")
                 .ticks(4)
             )
-            .style("stroke", "#e5e7eb")
-            .style("stroke-opacity", 0.08)
+            .selectAll("line")
+            .style("stroke", "#9ca3af")
+            .style("stroke-opacity", 0.4)
+            .style("stroke-width", 1)
+            .selectAll(".domain")
+            .style("stroke", "none");
+
+        // Adicionar grid horizontal (linhas horizontais)
+        g.append("g")
+            .attr("class", "grid-horizontal")
+            .call(d3.axisLeft(yScale)
+                .tickSize(-chartWidth)
+                .tickFormat(() => "")
+                .ticks(data.length)
+            )
+            .selectAll("line")
+            .style("stroke", "#9ca3af")
+            .style("stroke-opacity", 0.4)
+            .style("stroke-width", 1)
             .selectAll(".domain")
             .style("stroke", "none");
 

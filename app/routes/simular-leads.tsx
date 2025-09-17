@@ -18,6 +18,7 @@ interface SimulatedLead {
     contractCount: number;
     contractValue: number;
     simulationDate: string;
+    simulationTime: string;
 }
 
 export default function SimularLeads() {
@@ -25,16 +26,16 @@ export default function SimularLeads() {
 
     // Dados mockados para demonstração
     const simulatedLeads: SimulatedLead[] = [
-        { id: "1", name: "TechCorp Solutions", cluster: "Tecnologia", churnRisk: 0.15, nps: 8.5, contractCount: 3, contractValue: 45000, simulationDate: "2024-01-15" },
-        { id: "2", name: "Hospital São Lucas", cluster: "Saúde", churnRisk: 0.08, nps: 9.2, contractCount: 2, contractValue: 32000, simulationDate: "2024-01-14" },
-        { id: "3", name: "Universidade Federal", cluster: "Educação", churnRisk: 0.22, nps: 7.8, contractCount: 1, contractValue: 18000, simulationDate: "2024-01-13" },
-        { id: "4", name: "Banco Nacional", cluster: "Financeiro", churnRisk: 0.12, nps: 8.9, contractCount: 4, contractValue: 67000, simulationDate: "2024-01-12" },
-        { id: "5", name: "Supermercado Central", cluster: "Varejo", churnRisk: 0.18, nps: 8.1, contractCount: 2, contractValue: 28000, simulationDate: "2024-01-11" },
-        { id: "6", name: "AutoMega Concessionária", cluster: "Automotivo", churnRisk: 0.14, nps: 8.3, contractCount: 3, contractValue: 52000, simulationDate: "2024-01-10" },
-        { id: "7", name: "Restaurante Gourmet", cluster: "Alimentício", churnRisk: 0.09, nps: 9.1, contractCount: 2, contractValue: 35000, simulationDate: "2024-01-09" },
-        { id: "8", name: "Imobiliária Premium", cluster: "Imobiliário", churnRisk: 0.25, nps: 7.5, contractCount: 1, contractValue: 15000, simulationDate: "2024-01-08" },
-        { id: "9", name: "Telecom Global", cluster: "Telecomunicações", churnRisk: 0.11, nps: 8.7, contractCount: 5, contractValue: 78000, simulationDate: "2024-01-07" },
-        { id: "10", name: "Energia Verde Ltda", cluster: "Energia", churnRisk: 0.16, nps: 8.4, contractCount: 2, contractValue: 41000, simulationDate: "2024-01-06" },
+        { id: "1", name: "TechCorp Solutions", cluster: "Tecnologia", churnRisk: 0.15, nps: 8.5, contractCount: 3, contractValue: 45000, simulationDate: "2024-01-15", simulationTime: "14:30" },
+        { id: "2", name: "Hospital São Lucas", cluster: "Saúde", churnRisk: 0.08, nps: 9.2, contractCount: 2, contractValue: 32000, simulationDate: "2024-01-14", simulationTime: "09:15" },
+        { id: "3", name: "Universidade Federal", cluster: "Educação", churnRisk: 0.22, nps: 7.8, contractCount: 1, contractValue: 18000, simulationDate: "2024-01-13", simulationTime: "16:45" },
+        { id: "4", name: "Banco Nacional", cluster: "Financeiro", churnRisk: 0.12, nps: 8.9, contractCount: 4, contractValue: 67000, simulationDate: "2024-01-12", simulationTime: "11:20" },
+        { id: "5", name: "Supermercado Central", cluster: "Varejo", churnRisk: 0.18, nps: 8.1, contractCount: 2, contractValue: 28000, simulationDate: "2024-01-11", simulationTime: "13:10" },
+        { id: "6", name: "AutoMega Concessionária", cluster: "Automotivo", churnRisk: 0.14, nps: 8.3, contractCount: 3, contractValue: 52000, simulationDate: "2024-01-10", simulationTime: "15:55" },
+        { id: "7", name: "Restaurante Gourmet", cluster: "Alimentício", churnRisk: 0.09, nps: 9.1, contractCount: 2, contractValue: 35000, simulationDate: "2024-01-09", simulationTime: "10:30" },
+        { id: "8", name: "Imobiliária Premium", cluster: "Imobiliário", churnRisk: 0.25, nps: 7.5, contractCount: 1, contractValue: 15000, simulationDate: "2024-01-08", simulationTime: "17:25" },
+        { id: "9", name: "Telecom Global", cluster: "Telecomunicações", churnRisk: 0.11, nps: 8.7, contractCount: 5, contractValue: 78000, simulationDate: "2024-01-07", simulationTime: "08:40" },
+        { id: "10", name: "Energia Verde Ltda", cluster: "Energia", churnRisk: 0.16, nps: 8.4, contractCount: 2, contractValue: 41000, simulationDate: "2024-01-06", simulationTime: "12:15" },
     ];
 
     const totalSimulated = simulatedLeads.length;
@@ -52,8 +53,9 @@ export default function SimularLeads() {
         return `${(value * 100).toFixed(1)}%`;
     };
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('pt-BR');
+    const formatDate = (dateString: string, timeString: string) => {
+        const date = new Date(dateString).toLocaleDateString('pt-BR');
+        return `${date} - ${timeString}`;
     };
 
     // Preparar dados para o DataTable
@@ -61,7 +63,7 @@ export default function SimularLeads() {
         ...lead,
         churnRiskFormatted: formatPercentage(lead.churnRisk),
         contractValueFormatted: formatCurrency(lead.contractValue),
-        simulationDateFormatted: formatDate(lead.simulationDate),
+        simulationDateFormatted: formatDate(lead.simulationDate, lead.simulationTime),
         churnRiskColor: lead.churnRisk < 0.1 ? 'text-green-600' :
             lead.churnRisk < 0.2 ? 'text-yellow-600' : 'text-red-600',
         actions: (
@@ -75,12 +77,10 @@ export default function SimularLeads() {
     const columns = [
         { key: 'name' as keyof typeof tableData[0], label: 'Nome', sortable: true },
         { key: 'cluster' as keyof typeof tableData[0], label: 'Cluster', sortable: true },
-        { key: 'churnRiskFormatted' as keyof typeof tableData[0], label: 'Risco de Churn', sortable: true },
         { key: 'nps' as keyof typeof tableData[0], label: 'NPS', sortable: true },
         { key: 'contractCount' as keyof typeof tableData[0], label: 'Qtd. Contratos', sortable: true },
         { key: 'contractValueFormatted' as keyof typeof tableData[0], label: 'Valor do Contrato', sortable: true },
         { key: 'simulationDateFormatted' as keyof typeof tableData[0], label: 'Data da Simulação', sortable: true },
-        { key: 'actions' as keyof typeof tableData[0], label: 'Ver Detalhes', sortable: false }
     ];
 
     return (

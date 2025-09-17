@@ -52,8 +52,23 @@ export default function Top5HorizontalBarChart({
                 .tickFormat(() => "")
                 .ticks(4)
             )
-            .style("stroke", "#e5e7eb")
-            .style("stroke-opacity", 0.08)
+            .style("stroke", "#9ca3af")
+            .style("stroke-opacity", 0.2)
+            .selectAll(".domain")
+            .style("stroke", "none");
+
+        // Adicionar grid horizontal (linhas horizontais)
+        g.append("g")
+            .attr("class", "grid-horizontal")
+            .call(d3.axisLeft(yScale)
+                .tickSize(-chartWidth)
+                .tickFormat(() => "")
+                .ticks(data.length)
+            )
+            .selectAll("line")
+            .style("stroke", "#9ca3af")
+            .style("stroke-opacity", 0.2)
+            .style("stroke-width", 1)
             .selectAll(".domain")
             .style("stroke", "none");
 
@@ -66,18 +81,6 @@ export default function Top5HorizontalBarChart({
             "#ede9fe"  // mais claro
         ];
 
-        g.append("g")
-            .attr("class", "grid")
-            .attr("transform", `translate(0,${chartHeight})`)
-            .call(
-                d3.axisBottom(xScale)
-                    .ticks(6)
-                    .tickSize(-chartHeight) // desenha linhas verticais
-                    .tickFormat(() => "")
-            )
-            .selectAll("line")
-            .style("stroke", "#9ca3af")       // cinza médio
-            .style("stroke-opacity", 0.5);
 
         // Adicionar as barras horizontais
         g.selectAll(".bar")
@@ -129,7 +132,7 @@ export default function Top5HorizontalBarChart({
             .style("fill", "#6b7280")
             .style("text-anchor", "end")
             .attr("dx", "-0.5em")
-            .text(function (d) {
+            .text(function (d: any) {
                 const text = d.toString();
                 return text.length > 8 ? text.substring(0, 8) + "..." : text;
             })
