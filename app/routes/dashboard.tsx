@@ -97,7 +97,7 @@ export default function Dashboard() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Lifetime Value */}
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-sm font-medium text-purple-800">Lifetime Value (LTV) Médio</h3>
@@ -117,7 +117,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* Ticket Médio */}
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-sm font-medium text-purple-800">Valor Médio por Contrato</h3>
@@ -137,7 +137,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* Cross-sell */}
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-sm font-medium text-purple-800">Taxa de Cross-sell</h3>
@@ -172,7 +172,7 @@ export default function Dashboard() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                     {/* NPS Geral */}
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-sm font-medium text-purple-800">NPS Geral</h3>
@@ -192,7 +192,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* NPS Relacional */}
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-sm font-medium text-purple-800">NPS Relacional</h3>
@@ -212,7 +212,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* NPS Suporte */}
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-sm font-medium text-purple-800">NPS Suporte</h3>
@@ -232,7 +232,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* NPS Produto */}
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-sm font-medium text-purple-800">NPS Produto</h3>
@@ -255,7 +255,7 @@ export default function Dashboard() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* TMR */}
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-sm font-medium text-purple-800">Tempo Médio de Resolução</h3>
@@ -275,7 +275,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* Volume de Tickets por Produto */}
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
                         <h3 className="text-sm font-medium text-purple-800 mb-4">Volume de Tickets por Produto</h3>
                         <div className="space-y-3">
                             {mockKPIs.satisfaction.ticketsProduto.map((item, index) => (
@@ -303,7 +303,7 @@ export default function Dashboard() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Dias Ativos */}
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-sm font-medium text-purple-800">Dias Ativos por Mês (Média)</h3>
@@ -323,7 +323,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* Duração de Uso */}
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="text-sm font-medium text-purple-800">Duração de Uso por Mês (Média)</h3>
