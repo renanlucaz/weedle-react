@@ -1,7 +1,7 @@
 // Configurações da API
 
 export const API_CONFIG = {
-    baseUrl: 'http://localhost:8010/api',
+    baseUrl: 'http://localhost:8010/',
     timeout: 30000, // 30 segundos
     retries: 3,
     headers: {
