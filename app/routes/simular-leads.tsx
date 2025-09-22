@@ -34,7 +34,7 @@ export default function SimularLeads() {
 
     const totalSimulated = simulatedLeads.length;
     const totalConverted = simulatedLeads.filter(lead => lead.churnRisk < 0.15).length;
-    const modelAccuracy = 100;
+    const modelAccuracy = 96.2;
 
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat('pt-BR', {
