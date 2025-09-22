@@ -36,14 +36,14 @@ export default function Clusters() {
     const clusters: Cluster[] = [
         {
             id: "cluster-1",
-            name: "Clientes Premium",
-            size: 120,
+            name: "Engajamento moderado",
+            size: 965,
             color: "#8B5CF6",
             x: 0,
             y: 0,
             description: "Clientes de alto valor com frequência de compra elevada e ticket médio superior",
             metrics: {
-                totalClients: 100,
+                totalClients: 965,
                 avgTicket: "R$ 2.450,00",
                 frequency: "5x/semana",
                 lastOrder: "15/01/2025"
@@ -61,14 +61,14 @@ export default function Clusters() {
         },
         {
             id: "cluster-2",
-            name: "Clientes Regulares",
-            size: 100,
+            name: "Clientes inativos",
+            size: 1005,
             color: "#10B981",
             x: 0,
             y: 0,
             description: "Base sólida de clientes com padrão de compra consistente e moderado",
             metrics: {
-                totalClients: 128,
+                totalClients: 1005,
                 avgTicket: "R$ 1.200,00",
                 frequency: "2x/semana",
                 lastOrder: "18/01/2025"
@@ -86,14 +86,14 @@ export default function Clusters() {
         },
         {
             id: "cluster-3",
-            name: "Clientes Ocasionais",
-            size: 80,
+            name: "Clientes premium",
+            size: 7248,
             color: "#F59E0B",
             x: 0,
             y: 0,
             description: "Clientes com baixa frequência mas potencial de crescimento",
             metrics: {
-                totalClients: 100,
+                totalClients: 7248,
                 avgTicket: "R$ 850,00",
                 frequency: "1x/mês",
                 lastOrder: "05/01/2025"
@@ -111,14 +111,14 @@ export default function Clusters() {
         },
         {
             id: "cluster-4",
-            name: "Novos Clientes",
+            name: "Clientes neutros",
             size: 60,
             color: "#EF4444",
             x: 0,
             y: 0,
             description: "Clientes recém-cadastrados em processo de onboarding",
             metrics: {
-                totalClients: 130,
+                totalClients: 1091,
                 avgTicket: "R$ 650,00",
                 frequency: "1x/mês",
                 lastOrder: "20/01/2025"
@@ -136,14 +136,14 @@ export default function Clusters() {
         },
         {
             id: "cluster-5",
-            name: "Clientes Corporativos",
-            size: 140,
+            name: "Clientes críticos",
+            size: 306,
             color: "#06B6D4",
             x: 0,
             y: 0,
             description: "Empresas com volume alto de compras e contratos especiais",
             metrics: {
-                totalClients: 100,
+                totalClients: 306,
                 avgTicket: "R$ 5.200,00",
                 frequency: "3x/semana",
                 lastOrder: "19/01/2025"
@@ -157,31 +157,6 @@ export default function Clusters() {
                 "DESCONTOS VOLUME",
                 "SUPORTE TÉCNICO",
                 "RELACIONAMENTO"
-            ]
-        },
-        {
-            id: "cluster-6",
-            name: "Clientes Sazonais",
-            size: 70,
-            color: "#EC4899",
-            x: 0,
-            y: 0,
-            description: "Clientes que compram apenas em períodos específicos do ano",
-            metrics: {
-                totalClients: 100,
-                avgTicket: "R$ 1.800,00",
-                frequency: "2x/ano",
-                lastOrder: "12/12/2024"
-            },
-            keywords: [
-                "COMPRAS SAZONAIS",
-                "PERÍODOS ESPECÍFICOS",
-                "PRODUTOS TEMÁTICOS",
-                "CAMPANHAS SAZONAIS",
-                "ATENDIMENTO ESPECIAL",
-                "ENTREGAS URGENTES",
-                "PROMOÇÕES TEMPORAIS",
-                "LEMBRETE"
             ]
         }
     ];
