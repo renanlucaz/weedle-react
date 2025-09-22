@@ -11,12 +11,14 @@ export function meta({ }: Route.MetaArgs) {
 
 interface SimulatedLead {
     id: string;
-    name: string;
-    cluster: string;
-    churnRisk: number;
-    nps: number;
-    contractCount: number;
+    cnpj: string;
+    companyName: string;
+    segment: string;
+    capital: number;
+    email: string;
+    product: string;
     contractValue: number;
+    cluster: string;
     simulationDate: string;
     simulationTime: string;
 }
@@ -26,21 +28,13 @@ export default function SimularLeads() {
 
     // Dados mockados para demonstração
     const simulatedLeads: SimulatedLead[] = [
-        { id: "1", name: "TechCorp Solutions", cluster: "Tecnologia", churnRisk: 0.15, nps: 8.5, contractCount: 3, contractValue: 45000, simulationDate: "2024-01-15", simulationTime: "14:30" },
-        { id: "2", name: "Hospital São Lucas", cluster: "Saúde", churnRisk: 0.08, nps: 9.2, contractCount: 2, contractValue: 32000, simulationDate: "2024-01-14", simulationTime: "09:15" },
-        { id: "3", name: "Universidade Federal", cluster: "Educação", churnRisk: 0.22, nps: 7.8, contractCount: 1, contractValue: 18000, simulationDate: "2024-01-13", simulationTime: "16:45" },
-        { id: "4", name: "Banco Nacional", cluster: "Financeiro", churnRisk: 0.12, nps: 8.9, contractCount: 4, contractValue: 67000, simulationDate: "2024-01-12", simulationTime: "11:20" },
-        { id: "5", name: "Supermercado Central", cluster: "Varejo", churnRisk: 0.18, nps: 8.1, contractCount: 2, contractValue: 28000, simulationDate: "2024-01-11", simulationTime: "13:10" },
-        { id: "6", name: "AutoMega Concessionária", cluster: "Automotivo", churnRisk: 0.14, nps: 8.3, contractCount: 3, contractValue: 52000, simulationDate: "2024-01-10", simulationTime: "15:55" },
-        { id: "7", name: "Restaurante Gourmet", cluster: "Alimentício", churnRisk: 0.09, nps: 9.1, contractCount: 2, contractValue: 35000, simulationDate: "2024-01-09", simulationTime: "10:30" },
-        { id: "8", name: "Imobiliária Premium", cluster: "Imobiliário", churnRisk: 0.25, nps: 7.5, contractCount: 1, contractValue: 15000, simulationDate: "2024-01-08", simulationTime: "17:25" },
-        { id: "9", name: "Telecom Global", cluster: "Telecomunicações", churnRisk: 0.11, nps: 8.7, contractCount: 5, contractValue: 78000, simulationDate: "2024-01-07", simulationTime: "08:40" },
-        { id: "10", name: "Energia Verde Ltda", cluster: "Energia", churnRisk: 0.16, nps: 8.4, contractCount: 2, contractValue: 41000, simulationDate: "2024-01-06", simulationTime: "12:15" },
+        { id: "1", cnpj: "12.345.678/0001-90", companyName: "TechCorp Solutions", segment: "Tecnologia", capital: 500000, email: "contato@techcorp.com", product: "ERP Cloud", contractValue: 45000, cluster: "Tecnologia", simulationDate: "2024-01-15", simulationTime: "14:30" },
+        { id: "2", cnpj: "98.765.432/0001-10", companyName: "Hospital São Lucas", segment: "Saúde", capital: 800000, email: "admin@hospitalsaolucas.com", product: "TOTVS Saúde", contractValue: 32000, cluster: "Saúde", simulationDate: "2024-01-14", simulationTime: "09:15" },
     ];
 
     const totalSimulated = simulatedLeads.length;
     const totalConverted = simulatedLeads.filter(lead => lead.churnRisk < 0.15).length;
-    const modelAccuracy = 87.5;
+    const modelAccuracy = 100;
 
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat('pt-BR', {
@@ -61,26 +55,22 @@ export default function SimularLeads() {
     // Preparar dados para o DataTable
     const tableData = simulatedLeads.map(lead => ({
         ...lead,
-        churnRiskFormatted: formatPercentage(lead.churnRisk),
+        capitalFormatted: formatCurrency(lead.capital),
         contractValueFormatted: formatCurrency(lead.contractValue),
         simulationDateFormatted: formatDate(lead.simulationDate, lead.simulationTime),
-        churnRiskColor: lead.churnRisk < 0.1 ? 'text-green-600' :
-            lead.churnRisk < 0.2 ? 'text-yellow-600' : 'text-red-600',
-        actions: (
-            <button className="text-purple-600 hover:text-purple-800 text-sm font-medium transition-colors duration-200 cursor-pointer">
-                Ver detalhes
-            </button>
-        )
     }));
 
     // Definir colunas para o DataTable
     const columns = [
-        { key: 'name' as keyof typeof tableData[0], label: 'Nome', sortable: true },
+        { key: 'cnpj' as keyof typeof tableData[0], label: 'CNPJ', sortable: true },
+        { key: 'companyName' as keyof typeof tableData[0], label: 'Nome Empresa', sortable: true },
+        { key: 'segment' as keyof typeof tableData[0], label: 'Segmento', sortable: true },
+        { key: 'capitalFormatted' as keyof typeof tableData[0], label: 'Capital Social', sortable: true },
+        { key: 'email' as keyof typeof tableData[0], label: 'Email', sortable: true },
+        { key: 'product' as keyof typeof tableData[0], label: 'Produto', sortable: true },
+        { key: 'contractValueFormatted' as keyof typeof tableData[0], label: 'Valor Contrato', sortable: true },
         { key: 'cluster' as keyof typeof tableData[0], label: 'Cluster', sortable: true },
-        { key: 'nps' as keyof typeof tableData[0], label: 'NPS', sortable: true },
-        { key: 'contractCount' as keyof typeof tableData[0], label: 'Qtd. Contratos', sortable: true },
-        { key: 'contractValueFormatted' as keyof typeof tableData[0], label: 'Valor do Contrato', sortable: true },
-        { key: 'simulationDateFormatted' as keyof typeof tableData[0], label: 'Data da Simulação', sortable: true },
+        { key: 'simulationDateFormatted' as keyof typeof tableData[0], label: 'Data Simulação', sortable: true },
     ];
 
     return (
@@ -181,55 +171,25 @@ export default function SimularLeads() {
                             </div>
 
                             <form className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Cluster
-                                    </label>
-                                    <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                        <option value="">Selecione um cluster</option>
-                                        <option value="tecnologia">Tecnologia</option>
-                                        <option value="saude">Saúde</option>
-                                        <option value="educacao">Educação</option>
-                                        <option value="financeiro">Financeiro</option>
-                                        <option value="varejo">Varejo</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        NPS
-                                    </label>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        max="10"
-                                        step="0.1"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Quantidade de Contratos
-                                    </label>
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Valor do Contrato
-                                    </label>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        step="1000"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                    />
-                                </div>
+                                {[
+                                    { label: "CNPJ", type: "text" },
+                                    { label: "Nome Empresa", type: "text" },
+                                    { label: "Segmento", type: "text" },
+                                    { label: "Capital Social", type: "number" },
+                                    { label: "Email", type: "email" },
+                                    { label: "Produto", type: "text" },
+                                    { label: "Valor Contrato", type: "number" },
+                                ].map((field, idx) => (
+                                    <div key={idx}>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            {field.label}
+                                        </label>
+                                        <input
+                                            type={field.type}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        />
+                                    </div>
+                                ))}
 
                                 <div className="flex space-x-3 pt-4">
                                     <button
