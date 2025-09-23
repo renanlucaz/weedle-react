@@ -29,6 +29,23 @@ export interface DashboardData {
     clusters: Cluster[];
 }
 
+// Interface para a resposta da API de clusters
+export interface ClusterApiResponse {
+    clusters: {
+        cluster_id: number;
+        descricao: string;
+        total_tickets_abertos: number;
+        total_desconto_concedido: number;
+        media_nps: number;
+        qtd_avaliacoes_nps: number;
+        qtd_contratos: number;
+        valor_total_contratado: number;
+        media_dias_resolucao_ticket: number;
+        n_clients: number;
+        acoes: any[];
+    }[];
+}
+
 export const api = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
@@ -89,6 +106,11 @@ export const api = createApi({
             query: (clusterId) => `/dashboard/tempo-medio-resolucao${clusterId !== 'all' ? `?cluster_id=${clusterId}` : ''}`,
             providesTags: [CACHE_TAGS.Dashboard],
         }),
+
+        getClusters: builder.query<ClusterApiResponse, void>({
+            query: () => '/clusters',
+            providesTags: [CACHE_TAGS.Dashboard],
+        }),
     }),
 });
 
@@ -99,4 +121,5 @@ export const {
     useGetTaxaCrossSellQuery,
     useGetNpsQuery,
     useGetTempoMedioResolucaoQuery,
+    useGetClustersQuery,
 } = api;

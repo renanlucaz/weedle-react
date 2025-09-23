@@ -14,15 +14,24 @@ interface Cluster {
         avgTicket: string;
         frequency: string;
         lastOrder: string;
+        totalTicketsAbertos: number;
+        totalDescontoConcedido: number;
+        mediaNps: number;
+        qtdAvaliacoesNps: number;
+        qtdContratos: number;
+        valorTotalContratado: number;
+        mediaDiasResolucaoTicket: number;
     };
     keywords: string[];
 }
 
 interface ClusterNetworkChartProps {
     clusters: Cluster[];
+    onClusterClick?: (cluster: Cluster) => void;
+    selectedCluster?: Cluster | null;
 }
 
-export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartProps) {
+export default function ClusterNetworkChart({ clusters, onClusterClick, selectedCluster: externalSelectedCluster }: ClusterNetworkChartProps) {
     const svgRef = useRef<SVGSVGElement>(null);
     const zoomBehavior = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null);
     const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
@@ -278,16 +287,16 @@ export default function ClusterNetworkChart({ clusters }: ClusterNetworkChartPro
                             <div className="text-sm text-gray-600">Total de Clientes</div>
                         </div>
                         <div className="bg-gray-50 rounded-lg p-4 text-center">
-                            <div className="text-2xl font-bold text-green-600">{selectedCluster?.metrics.avgTicket}</div>
-                            <div className="text-sm text-gray-600">Ticket Médio</div>
+                            <div className="text-2xl font-bold  text-purple-600">{selectedCluster?.metrics.mediaNps}</div>
+                            <div className="text-sm text-gray-600">Média NPS</div>
                         </div>
                         <div className="bg-gray-50 rounded-lg p-4 text-center">
-                            <div className="text-2xl font-bold text-blue-600">{selectedCluster?.metrics.frequency}</div>
-                            <div className="text-sm text-gray-600">Frequência</div>
+                            <div className="text-2xl font-bold  text-purple-600">{selectedCluster?.metrics.valorTotalContratado}</div>
+                            <div className="text-sm text-gray-600">Média valor contratado</div>
                         </div>
                         <div className="bg-gray-50 rounded-lg p-4 text-center">
-                            <div className="text-2xl font-bold text-orange-600">{selectedCluster?.metrics.lastOrder}</div>
-                            <div className="text-sm text-gray-600">Último Pedido</div>
+                            <div className="text-2xl font-bold  text-purple-600">{selectedCluster?.metrics.totalTicketsAbertos}</div>
+                            <div className="text-sm text-gray-600">Média tickets abertos</div>
                         </div>
                     </div>
 

@@ -1,8 +1,10 @@
 
 import type { Route } from "./+types/clusters";
 import { useState } from "react";
-import { ClusterNetworkChart, ClusterDrawer } from "../components";
+import { ClusterNetworkChart } from "../components";
+import { useClusters } from "../hooks";
 
+// Interface para o cluster formatado para a UI
 interface Cluster {
     id: string;
     name: string;
@@ -16,6 +18,13 @@ interface Cluster {
         avgTicket: string;
         frequency: string;
         lastOrder: string;
+        totalTicketsAbertos: number;
+        totalDescontoConcedido: number;
+        mediaNps: number;
+        qtdAvaliacoesNps: number;
+        qtdContratos: number;
+        valorTotalContratado: number;
+        mediaDiasResolucaoTicket: number;
     };
     keywords: string[];
 }
@@ -30,136 +39,9 @@ export function meta({ }: Route.MetaArgs) {
 export default function Clusters() {
     const [selectedCluster, setSelectedCluster] = useState<Cluster | null>(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [searchTerm, setSearchTerm] = useState("");
 
-    // Dados mockados dos clusters
-    const clusters: Cluster[] = [
-        {
-            id: "cluster-1",
-            name: "Engajamento moderado",
-            size: 965,
-            color: "#8B5CF6",
-            x: 0,
-            y: 0,
-            description: "Clientes de alto valor com frequência de compra elevada e ticket médio superior",
-            metrics: {
-                totalClients: 965,
-                avgTicket: "R$ 2.450,00",
-                frequency: "5x/semana",
-                lastOrder: "15/01/2025"
-            },
-            keywords: [
-                "COMPRAS FREQUENTES",
-                "TICKET ALTO",
-                "FIDELIDADE",
-                "PRODUTOS PREMIUM",
-                "ATENDIMENTO VIP",
-                "ENTREGAS RÁPIDAS",
-                "DESCONTOS EXCLUSIVOS",
-                "SUPORTE PRIORITÁRIO"
-            ]
-        },
-        {
-            id: "cluster-2",
-            name: "Clientes inativos",
-            size: 1005,
-            color: "#10B981",
-            x: 0,
-            y: 0,
-            description: "Base sólida de clientes com padrão de compra consistente e moderado",
-            metrics: {
-                totalClients: 1005,
-                avgTicket: "R$ 1.200,00",
-                frequency: "2x/semana",
-                lastOrder: "18/01/2025"
-            },
-            keywords: [
-                "COMPRAS REGULARES",
-                "TICKET MÉDIO",
-                "PRODUTOS BÁSICOS",
-                "PROMOÇÕES",
-                "ATENDIMENTO PADRÃO",
-                "ENTREGAS NORMALS",
-                "CUPONS",
-                "CAMPANHAS"
-            ]
-        },
-        {
-            id: "cluster-3",
-            name: "Clientes premium",
-            size: 7248,
-            color: "#F59E0B",
-            x: 0,
-            y: 0,
-            description: "Clientes com baixa frequência mas potencial de crescimento",
-            metrics: {
-                totalClients: 7248,
-                avgTicket: "R$ 850,00",
-                frequency: "1x/mês",
-                lastOrder: "05/01/2025"
-            },
-            keywords: [
-                "COMPRAS OCASIONAIS",
-                "TICKET BAIXO",
-                "PRODUTOS BÁSICOS",
-                "OFERTAS",
-                "ATENDIMENTO BÁSICO",
-                "ENTREGAS PADRÃO",
-                "DESCONTOS",
-                "REATIVAÇÃO"
-            ]
-        },
-        {
-            id: "cluster-4",
-            name: "Clientes neutros",
-            size: 60,
-            color: "#EF4444",
-            x: 0,
-            y: 0,
-            description: "Clientes recém-cadastrados em processo de onboarding",
-            metrics: {
-                totalClients: 1091,
-                avgTicket: "R$ 650,00",
-                frequency: "1x/mês",
-                lastOrder: "20/01/2025"
-            },
-            keywords: [
-                "PRIMEIRA COMPRA",
-                "ONBOARDING",
-                "PRODUTOS INICIAIS",
-                "BEM-VINDO",
-                "ATENDIMENTO ESPECIAL",
-                "ENTREGAS RÁPIDAS",
-                "DESCONTO INICIAL",
-                "ACOMPANHAMENTO"
-            ]
-        },
-        {
-            id: "cluster-5",
-            name: "Clientes críticos",
-            size: 306,
-            color: "#06B6D4",
-            x: 0,
-            y: 0,
-            description: "Empresas com volume alto de compras e contratos especiais",
-            metrics: {
-                totalClients: 306,
-                avgTicket: "R$ 5.200,00",
-                frequency: "3x/semana",
-                lastOrder: "19/01/2025"
-            },
-            keywords: [
-                "COMPRAS CORPORATIVAS",
-                "TICKET ALTO",
-                "CONTRATOS",
-                "ATENDIMENTO DEDICADO",
-                "ENTREGAS PROGRAMADAS",
-                "DESCONTOS VOLUME",
-                "SUPORTE TÉCNICO",
-                "RELACIONAMENTO"
-            ]
-        }
-    ];
+    // Hook para buscar dados dos clusters da API
+    const { clusters, isLoading, isError } = useClusters();
 
     const handleClusterClick = (cluster: Cluster) => {
         setSelectedCluster(cluster);
@@ -170,13 +52,6 @@ export default function Clusters() {
         setIsDrawerOpen(false);
         setSelectedCluster(null);
     };
-
-    // Filtrar clusters baseado na busca
-    const filteredClusters = clusters.filter(cluster =>
-        cluster.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        cluster.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        cluster.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
 
     return (
         <div className="h-screen bg-white flex flex-col overflow-hidden">
@@ -194,19 +69,30 @@ export default function Clusters() {
 
             {/* Cluster Network Chart - Full Screen */}
             <div className="flex-1 bg-white overflow-hidden">
-                <ClusterNetworkChart
-                    clusters={filteredClusters}
-                    onClusterClick={handleClusterClick}
-                    selectedCluster={selectedCluster}
-                />
+                {isLoading ? (
+                    <div className="h-full flex items-center justify-center">
+                        <div className="text-center">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                            <p className="text-gray-600">Carregando clusters...</p>
+                        </div>
+                    </div>
+                ) : isError ? (
+                    <div className="h-full flex items-center justify-center">
+                        <div className="text-center">
+                            <div className="text-red-500 text-6xl mb-4">⚠️</div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Erro ao carregar clusters</h3>
+                            <p className="text-gray-600">Não foi possível carregar os dados dos clusters.</p>
+                        </div>
+                    </div>
+                ) : (
+                    <ClusterNetworkChart
+                        clusters={clusters}
+                        onClusterClick={handleClusterClick}
+                        selectedCluster={selectedCluster}
+                    />
+                )}
             </div>
 
-            {/* Cluster Drawer */}
-            <ClusterDrawer
-                cluster={selectedCluster}
-                isOpen={isDrawerOpen}
-                onClose={handleCloseDrawer}
-            />
         </div>
     );
 }
