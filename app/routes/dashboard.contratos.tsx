@@ -1,7 +1,8 @@
 import type { Route } from "./+types/dashboard";
 import { useState, useEffect } from "react";
 import { Top10BarChart } from "../components/charts";
-import { DataTable } from "../components";
+import { DataTable, ClientStatsSkeleton, ClientChartSkeleton, ClientTableSkeleton } from "../components";
+import { useMockLoading } from "../hooks";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -11,6 +12,9 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function DashboardContratos() {
+    // Hook para simular carregamento inicial apenas na primeira visita
+    const { isLoading } = useMockLoading(2500, 'dashboard-contratos');
+
     // Estados para responsividade
     const [windowWidth, setWindowWidth] = useState(1024);
 
@@ -275,66 +279,90 @@ export default function DashboardContratos() {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                {contratosData.map((contrato, index) => (
-                    <div key={index} className="bg-white p-4 rounded-lg shadow-sm">
-                        <div className="flex items-center">
-                            <div className={`p-2 ${contrato.bgColor} rounded-lg`}>
-                                {contrato.icon}
-                            </div>
-                            <div className="ml-4">
-                                <p className="text-sm font-medium text-gray-500">{contrato.title}</p>
-                                <p className={`text-2xl font-semibold ${contrato.textColor}`}>{contrato.value}</p>
+                {isLoading ? (
+                    <>
+                        <ClientStatsSkeleton />
+                        <ClientStatsSkeleton />
+                        <ClientStatsSkeleton />
+                        <ClientStatsSkeleton />
+                        <ClientStatsSkeleton />
+                        <ClientStatsSkeleton />
+                    </>
+                ) : (
+                    contratosData.map((contrato, index) => (
+                        <div key={index} className="bg-white p-4 rounded-lg shadow-sm">
+                            <div className="flex items-center">
+                                <div className={`p-2 ${contrato.bgColor} rounded-lg`}>
+                                    {contrato.icon}
+                                </div>
+                                <div className="ml-4">
+                                    <p className="text-sm font-medium text-gray-500">{contrato.title}</p>
+                                    <p className={`text-2xl font-semibold ${contrato.textColor}`}>{contrato.value}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                )}
             </div>
 
             {/* Gráficos de Contratos por Segmento */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                {/* Gráfico 1: Contratos Totais por Segmento */}
-                <div className="bg-white shadow rounded-lg p-6 h-[400px]">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Contratos totais - por segmento</h3>
-                    <div className="w-full overflow-hidden">
-                        <Top10BarChart
-                            data={contratosPorSegmentoData}
-                            width={Math.min(chartWidth * 0.5 - 48, 600)}
-                            height={400}
-                            color="#8b5cf6"
-                            showValues={true}
-                            fontSize={12}
-                            margin={{ top: 20, right: 20, bottom: 190, left: 50 }}
-                        />
-                    </div>
-                </div>
+                {isLoading ? (
+                    <>
+                        <ClientChartSkeleton className="h-[400px]" />
+                        <ClientChartSkeleton className="h-[400px]" />
+                    </>
+                ) : (
+                    <>
+                        {/* Gráfico 1: Contratos Totais por Segmento */}
+                        <div className="bg-white shadow rounded-lg p-6 h-[400px]">
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">Contratos totais - por segmento</h3>
+                            <div className="w-full overflow-hidden">
+                                <Top10BarChart
+                                    data={contratosPorSegmentoData}
+                                    width={Math.min(chartWidth * 0.5 - 48, 600)}
+                                    height={400}
+                                    color="#8b5cf6"
+                                    showValues={true}
+                                    fontSize={12}
+                                    margin={{ top: 20, right: 20, bottom: 190, left: 50 }}
+                                />
+                            </div>
+                        </div>
 
-                {/* Gráfico 2: Média de Contratos por Cliente por Segmento */}
-                <div className="bg-white shadow rounded-lg p-6 h-[400px]">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Média de contratos - por cliente por segmento</h3>
-                    <div className="w-full overflow-hidden">
-                        <Top10BarChart
-                            data={mediaContratosPorClienteData}
-                            width={Math.min(chartWidth * 0.5 - 48, 600)}
-                            height={400}
-                            color="#8b5cf6"
-                            showValues={true}
-                            fontSize={12}
-                            margin={{ top: 20, right: 20, bottom: 190, left: 50 }}
-                        />
-                    </div>
-                </div>
+                        {/* Gráfico 2: Média de Contratos por Cliente por Segmento */}
+                        <div className="bg-white shadow rounded-lg p-6 h-[400px]">
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">Média de contratos - por cliente por segmento</h3>
+                            <div className="w-full overflow-hidden">
+                                <Top10BarChart
+                                    data={mediaContratosPorClienteData}
+                                    width={Math.min(chartWidth * 0.5 - 48, 600)}
+                                    height={400}
+                                    color="#8b5cf6"
+                                    showValues={true}
+                                    fontSize={12}
+                                    margin={{ top: 20, right: 20, bottom: 190, left: 50 }}
+                                />
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
 
             {/* Tabela de Contratos */}
             <div className="mt-6">
-                <DataTable
-                    data={dadosContratos}
-                    columns={colunasContratos}
-                    title="Detalhamento de Contratos"
-                    searchPlaceholder="Pesquisar contratos..."
-                    itemsPerPage={10}
-                    height="500px"
-                />
+                {isLoading ? (
+                    <ClientTableSkeleton />
+                ) : (
+                    <DataTable
+                        data={dadosContratos}
+                        columns={colunasContratos}
+                        title="Detalhamento de Contratos"
+                        searchPlaceholder="Pesquisar contratos..."
+                        itemsPerPage={10}
+                        height="500px"
+                    />
+                )}
             </div>
         </div>
     );

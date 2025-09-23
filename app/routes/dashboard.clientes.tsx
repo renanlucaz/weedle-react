@@ -1,7 +1,8 @@
 import type { Route } from "./+types/dashboard";
 import { ActivityBarChart, Top10BarChart, Top5HorizontalBarChart } from "../components/charts";
-import { DataTable } from "../components";
+import { DataTable, ClientStatsSkeleton, ClientChartSkeleton, ClientTableSkeleton } from "../components";
 import { useState, useEffect } from "react";
+import { useMockLoading } from "../hooks";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -11,6 +12,9 @@ export function meta({ }: Route.MetaArgs) {
 }
 
 export default function DashboardClientes() {
+    // Hook para simular carregamento inicial apenas na primeira visita
+    const { isLoading } = useMockLoading(2500, 'dashboard-clientes');
+
     // Dados de faturamento
     const dadosFaturamento = [
         { faixa: "Sem Informações de Faturamento", quantidade: 5058 },
@@ -135,141 +139,167 @@ export default function DashboardClientes() {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <div className="flex items-center">
-                        <div className="p-2 bg-blue-100 rounded-lg">
-                            <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
+                {isLoading ? (
+                    <>
+                        <ClientStatsSkeleton />
+                        <ClientStatsSkeleton />
+                        <ClientStatsSkeleton />
+                        <ClientStatsSkeleton />
+                        <ClientStatsSkeleton />
+                        <ClientStatsSkeleton />
+                    </>
+                ) : (
+                    <>
+                        <div className="bg-white p-4 rounded-lg shadow-sm">
+                            <div className="flex items-center">
+                                <div className="p-2 bg-blue-100 rounded-lg">
+                                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                </div>
+                                <div className="ml-4">
+                                    <p className="text-sm font-medium text-gray-500">Clientes Totais Distintos</p>
+                                    <p className="text-2xl font-semibold text-gray-900">10,62 Mil</p>
+                                </div>
+                            </div>
                         </div>
-                        <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-500">Clientes Totais Distintos</p>
-                            <p className="text-2xl font-semibold text-gray-900">10,62 Mil</p>
-                        </div>
-                    </div>
-                </div>
 
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <div className="flex items-center">
-                        <div className="p-2 bg-green-100 rounded-lg">
-                            <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                            </svg>
+                        <div className="bg-white p-4 rounded-lg shadow-sm">
+                            <div className="flex items-center">
+                                <div className="p-2 bg-green-100 rounded-lg">
+                                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                    </svg>
+                                </div>
+                                <div className="ml-4">
+                                    <p className="text-sm font-medium text-gray-500">Segmentos Comerciais</p>
+                                    <p className="text-2xl font-semibold text-gray-900">14</p>
+                                </div>
+                            </div>
                         </div>
-                        <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-500">Segmentos Comerciais</p>
-                            <p className="text-2xl font-semibold text-gray-900">14</p>
-                        </div>
-                    </div>
-                </div>
 
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <div className="flex items-center">
-                        <div className="p-2 bg-purple-100 rounded-lg">
-                            <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                            </svg>
+                        <div className="bg-white p-4 rounded-lg shadow-sm">
+                            <div className="flex items-center">
+                                <div className="p-2 bg-purple-100 rounded-lg">
+                                    <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                    </svg>
+                                </div>
+                                <div className="ml-4">
+                                    <p className="text-sm font-medium text-gray-500">Subsegmentos Comerciais</p>
+                                    <p className="text-2xl font-semibold text-gray-900">66</p>
+                                </div>
+                            </div>
                         </div>
-                        <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-500">Subsegmentos Comerciais</p>
-                            <p className="text-2xl font-semibold text-gray-900">66</p>
-                        </div>
-                    </div>
-                </div>
 
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <div className="flex items-center">
-                        <div className="p-2 bg-yellow-100 rounded-lg">
-                            <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                            </svg>
+                        <div className="bg-white p-4 rounded-lg shadow-sm">
+                            <div className="flex items-center">
+                                <div className="p-2 bg-yellow-100 rounded-lg">
+                                    <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                    </svg>
+                                </div>
+                                <div className="ml-4">
+                                    <p className="text-sm font-medium text-gray-500">Marca TOTVS</p>
+                                    <p className="text-2xl font-semibold text-gray-900">86</p>
+                                </div>
+                            </div>
                         </div>
-                        <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-500">Marca TOTVS</p>
-                            <p className="text-2xl font-semibold text-gray-900">86</p>
-                        </div>
-                    </div>
-                </div>
 
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <div className="flex items-center">
-                        <div className="p-2 bg-indigo-100 rounded-lg">
-                            <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
+                        <div className="bg-white p-4 rounded-lg shadow-sm">
+                            <div className="flex items-center">
+                                <div className="p-2 bg-indigo-100 rounded-lg">
+                                    <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </div>
+                                <div className="ml-4">
+                                    <p className="text-sm font-medium text-gray-500">Estados Alcançados</p>
+                                    <p className="text-2xl font-semibold text-gray-900">39</p>
+                                </div>
+                            </div>
                         </div>
-                        <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-500">Estados Alcançados</p>
-                            <p className="text-2xl font-semibold text-gray-900">39</p>
-                        </div>
-                    </div>
-                </div>
 
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <div className="flex items-center">
-                        <div className="p-2 bg-pink-100 rounded-lg">
-                            <svg className="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                            </svg>
+                        <div className="bg-white p-4 rounded-lg shadow-sm">
+                            <div className="flex items-center">
+                                <div className="p-2 bg-pink-100 rounded-lg">
+                                    <svg className="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                    </svg>
+                                </div>
+                                <div className="ml-4">
+                                    <p className="text-sm font-medium text-gray-500">Cidades Alcançadas</p>
+                                    <p className="text-2xl font-semibold text-gray-900">1.249</p>
+                                </div>
+                            </div>
                         </div>
-                        <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-500">Cidades Alcançadas</p>
-                            <p className="text-2xl font-semibold text-gray-900">1.249</p>
-                        </div>
-                    </div>
-                </div>
+                    </>
+                )}
             </div>
 
             {/* Novos Gráficos */}
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-6">
-                {/* TOP 10 - Marca TOTVS */}
-                <div className="bg-white shadow rounded-lg overflow-hidden h-[450px] lg:h-[450px] flex flex-col lg:col-span-3">
-                    <div className="px-4 lg:px-6 py-4 border-b border-gray-200">
-                        <div className="flex justify-between items-center">
-                            <h3 className="text-base lg:text-lg font-medium text-gray-900">TOP 10 quantidade de clientes - por marca TOTVS</h3>
+                {isLoading ? (
+                    <>
+                        <ClientChartSkeleton className="lg:col-span-3" />
+                        <ClientChartSkeleton className="lg:col-span-2" />
+                    </>
+                ) : (
+                    <>
+                        {/* TOP 10 - Marca TOTVS */}
+                        <div className="bg-white shadow rounded-lg overflow-hidden h-[450px] lg:h-[450px] flex flex-col lg:col-span-3">
+                            <div className="px-4 lg:px-6 py-4 border-b border-gray-200">
+                                <div className="flex justify-between items-center">
+                                    <h3 className="text-base lg:text-lg font-medium text-gray-900">TOP 10 quantidade de clientes - por marca TOTVS</h3>
+                                </div>
+                            </div>
+                            <div className="flex-1 p-1 lg:p-2">
+                                <Top10BarChart
+                                    data={dadosMarcaTotvs}
+                                    width={top10Width}
+                                    height={580}
+                                    color="#8b5cf6"
+                                    fontSize={16}
+                                    showValues={false}
+                                />
+                            </div>
                         </div>
-                    </div>
-                    <div className="flex-1 p-1 lg:p-2">
-                        <Top10BarChart
-                            data={dadosMarcaTotvs}
-                            width={top10Width}
-                            height={580}
-                            color="#8b5cf6"
-                            fontSize={16}
-                            showValues={false}
-                        />
-                    </div>
-                </div>
 
-                {/* TOP 5 - Por UF */}
-                <div className="bg-white shadow rounded-lg overflow-hidden h-[450px] lg:h-[450px] flex flex-col lg:col-span-2">
-                    <div className="px-4 lg:px-6 py-4 border-b border-gray-200">
-                        <div className="flex justify-between items-center">
-                            <h3 className="text-base lg:text-lg font-medium text-gray-900">TOP 5 quantidade de clientes - por UF</h3>
+                        {/* TOP 5 - Por UF */}
+                        <div className="bg-white shadow rounded-lg overflow-hidden h-[450px] lg:h-[450px] flex flex-col lg:col-span-2">
+                            <div className="px-4 lg:px-6 py-4 border-b border-gray-200">
+                                <div className="flex justify-between items-center">
+                                    <h3 className="text-base lg:text-lg font-medium text-gray-900">TOP 5 quantidade de clientes - por UF</h3>
+                                </div>
+                            </div>
+                            <div className="flex-1 p-2 lg:p-4">
+                                <Top5HorizontalBarChart
+                                    data={dadosUF}
+                                    width={top5Width}
+                                    height={480}
+                                    showValues={false}
+                                />
+                            </div>
                         </div>
-                    </div>
-                    <div className="flex-1 p-2 lg:p-4">
-                        <Top5HorizontalBarChart
-                            data={dadosUF}
-                            width={top5Width}
-                            height={480}
-                            showValues={false}
-                        />
-                    </div>
-                </div>
+                    </>
+                )}
             </div>
 
             {/* Tabela de Clientes */}
             <div className="mt-6 mb-6">
-                <DataTable
-                    data={clientesData}
-                    columns={clientesColumns}
-                    title="Lista de clientes"
-                    searchPlaceholder="Pesquisar clientes..."
-                    itemsPerPage={10}
-                    height="500px"
-                />
+                {isLoading ? (
+                    <ClientTableSkeleton />
+                ) : (
+                    <DataTable
+                        data={clientesData}
+                        columns={clientesColumns}
+                        title="Lista de clientes"
+                        searchPlaceholder="Pesquisar clientes..."
+                        itemsPerPage={10}
+                        height="500px"
+                    />
+                )}
             </div>
         </div>
     );
