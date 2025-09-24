@@ -308,14 +308,9 @@ export default function ClusterNetworkChart({ clusters, onClusterClick, selected
                         <div className="space-y-3">
                             {selectedCluster?.acoes && selectedCluster.acoes.length > 0 ? (
                                 selectedCluster.acoes.map((acao, index) => {
-                                    const colors = ['bg-blue-50', 'bg-green-50', 'bg-purple-50', 'bg-orange-50', 'bg-pink-50', 'bg-indigo-50'];
-                                    const dotColors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-orange-500', 'bg-pink-500', 'bg-indigo-500'];
-                                    const colorClass = colors[index % colors.length];
-                                    const dotColorClass = dotColors[index % dotColors.length];
-
                                     return (
-                                        <div key={index} className={`flex items-start p-3 ${colorClass} rounded-lg`}>
-                                            <div className={`w-2 h-2 ${dotColorClass} rounded-full mt-2 mr-3 flex-shrink-0`} />
+                                        <div key={index} className={`flex items-start p-3 bg-purple-50 rounded-lg`}>
+                                            <div className={`w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0`} />
                                             <p className="text-sm text-gray-700">
                                                 {acao}
                                             </p>
