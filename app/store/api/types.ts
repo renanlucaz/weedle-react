@@ -148,3 +148,21 @@ export interface LeadsResponse {
         produto: string | null;
     };
 }
+
+// Tipos para simulação de leads
+export interface SimulateLeadRequest {
+    cnpj: string;
+    nome_empresa: string;
+    segmento: string;
+    capital_social: number;
+    email: string;
+    produto: string;
+    valor_contrato: number;
+}
+
+export interface SimulateLeadResponse {
+    success: boolean;
+    message: string;
+    lead_id: string;
+    data: SimulatedLead;
+}

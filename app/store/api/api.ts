@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { API_CONFIG, CACHE_TAGS } from './config';
-import type { LeadsResponse } from './types';
+import type { LeadsResponse, SimulateLeadRequest, SimulateLeadResponse } from './types';
 
 // Tipos base para as entidades
 export interface Company {
@@ -120,6 +120,15 @@ export const api = createApi({
             query: () => '/leads',
             providesTags: [CACHE_TAGS.Dashboard],
         }),
+
+        simulateLead: builder.mutation<SimulateLeadResponse, SimulateLeadRequest>({
+            query: (leadData) => ({
+                url: '/leads/simular',
+                method: 'POST',
+                body: leadData,
+            }),
+            invalidatesTags: [CACHE_TAGS.Dashboard],
+        }),
     }),
 });
 
@@ -132,4 +141,5 @@ export const {
     useGetTempoMedioResolucaoQuery,
     useGetClustersQuery,
     useGetLeadsQuery,
+    useSimulateLeadMutation,
 } = api;

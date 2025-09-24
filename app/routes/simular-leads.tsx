@@ -1,8 +1,8 @@
 import type { Route } from "./+types/simular-leads";
 import { useState } from "react";
 import DataTable from "~/components/DataTable";
-import { useGetLeadsQuery } from "~/store/api/api";
-import type { SimulatedLead } from "~/store/api/types";
+import { useGetLeadsQuery, useSimulateLeadMutation } from "~/store/api/api";
+import type { SimulatedLead, SimulateLeadRequest, SimulateLeadResponse } from "~/store/api/types";
 import { ClientStatsSkeleton, ClientTableSkeleton } from "~/components/ClientSkeleton";
 
 export function meta({ }: Route.MetaArgs) {
@@ -21,9 +21,26 @@ interface FormattedLead extends SimulatedLead {
 
 export default function SimularLeads() {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentTab, setCurrentTab] = useState<'form' | 'result'>('form');
+    const [formData, setFormData] = useState<SimulateLeadRequest>({
+        cnpj: '',
+        nome_empresa: '',
+        segmento: '',
+        capital_social: 0,
+        email: '',
+        produto: '',
+        valor_contrato: 0,
+    });
+    const [simulationResult, setSimulationResult] = useState<SimulateLeadResponse | null>(null);
+    const [snackbar, setSnackbar] = useState<{ show: boolean; message: string; type: 'error' | 'success' }>({
+        show: false,
+        message: '',
+        type: 'error'
+    });
 
     // Buscar dados da API
     const { data: leadsData, isLoading, error } = useGetLeadsQuery();
+    const [simulateLead, { isLoading: isSimulating }] = useSimulateLeadMutation();
 
     const simulatedLeads = leadsData?.leads || [];
     const totalSimulated = leadsData?.total || 0;
@@ -46,6 +63,55 @@ export default function SimularLeads() {
             hour: '2-digit',
             minute: '2-digit'
         });
+    };
+
+    // Funções para lidar com o formulário
+    const handleInputChange = (field: keyof SimulateLeadRequest, value: string | number) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            const result = await simulateLead(formData).unwrap();
+            setSimulationResult(result);
+            setCurrentTab('result');
+            setSnackbar({
+                show: true,
+                message: result.message,
+                type: 'success'
+            });
+        } catch (error: any) {
+            setSnackbar({
+                show: true,
+                message: error?.data?.message || 'Erro ao simular lead. Tente novamente.',
+                type: 'error'
+            });
+        }
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setCurrentTab('form');
+        setFormData({
+            cnpj: '',
+            nome_empresa: '',
+            segmento: '',
+            capital_social: 0,
+            email: '',
+            produto: '',
+            valor_contrato: 0,
+        });
+        setSimulationResult(null);
+    };
+
+    const handleNewSimulation = () => {
+        setCurrentTab('form');
+        setSimulationResult(null);
     };
 
     // Preparar dados para o DataTable
@@ -186,9 +252,11 @@ export default function SimularLeads() {
                     <div className="relative top-20 mx-auto p-5 border w-[600px] shadow-lg rounded-md bg-white">
                         <div className="mt-3">
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-lg font-medium text-gray-900">Simular Novo Lead</h3>
+                                <h3 className="text-lg font-medium text-gray-900">
+                                    {currentTab === 'form' ? 'Simular Novo Lead' : 'Resultado da Simulação'}
+                                </h3>
                                 <button
-                                    onClick={() => setIsModalOpen(false)}
+                                    onClick={handleCloseModal}
                                     className="text-gray-400 hover:text-gray-600 cursor-pointer"
                                 >
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -197,43 +265,250 @@ export default function SimularLeads() {
                                 </button>
                             </div>
 
-                            <form className="space-y-4">
-                                {[
-                                    { label: "CNPJ", type: "text" },
-                                    { label: "Nome Empresa", type: "text" },
-                                    { label: "Segmento", type: "text" },
-                                    { label: "Capital Social", type: "number" },
-                                    { label: "Email", type: "email" },
-                                    { label: "Produto", type: "text" },
-                                    { label: "Valor Contrato", type: "number" },
-                                ].map((field, idx) => (
-                                    <div key={idx}>
+                            {currentTab === 'form' ? (
+                                <form onSubmit={handleSubmit} className="space-y-4">
+                                    {/* CNPJ - linha completa */}
+                                    <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            {field.label}
+                                            CNPJ <span className="text-red-500">*</span>
                                         </label>
                                         <input
-                                            type={field.type}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            type="text"
+                                            required
+                                            value={formData.cnpj}
+                                            onChange={(e) => handleInputChange('cnpj', e.target.value)}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-700"
                                         />
                                     </div>
-                                ))}
 
-                                <div className="flex space-x-3 pt-4">
-                                    <button
-                                        type="button"
-                                        onClick={() => setIsModalOpen(false)}
-                                        className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
-                                    >
-                                        Cancelar
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md text-sm font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
-                                    >
-                                        Simular
-                                    </button>
+                                    {/* Nome Empresa e Segmento - duas colunas */}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Nome Empresa <span className="text-red-500">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                required
+                                                value={formData.nome_empresa}
+                                                onChange={(e) => handleInputChange('nome_empresa', e.target.value)}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-700"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Segmento <span className="text-red-500">*</span>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                required
+                                                value={formData.segmento}
+                                                onChange={(e) => handleInputChange('segmento', e.target.value)}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-700"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Capital Social e Valor Contrato - duas colunas */}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Capital Social <span className="text-red-500">*</span>
+                                            </label>
+                                            <input
+                                                type="number"
+                                                required
+                                                value={formData.capital_social}
+                                                onChange={(e) => handleInputChange('capital_social', Number(e.target.value))}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-700"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                Valor Contrato <span className="text-red-500">*</span>
+                                            </label>
+                                            <input
+                                                type="number"
+                                                required
+                                                value={formData.valor_contrato}
+                                                onChange={(e) => handleInputChange('valor_contrato', Number(e.target.value))}
+                                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-700"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Email - linha completa */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Email <span className="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            type="email"
+                                            required
+                                            value={formData.email}
+                                            onChange={(e) => handleInputChange('email', e.target.value)}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-700"
+                                        />
+                                    </div>
+
+                                    {/* Produto - linha completa */}
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Produto <span className="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            required
+                                            value={formData.produto}
+                                            onChange={(e) => handleInputChange('produto', e.target.value)}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-700"
+                                        />
+                                    </div>
+
+                                    <div className="flex space-x-3 pt-4">
+                                        <button
+                                            type="button"
+                                            onClick={handleCloseModal}
+                                            className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                                        >
+                                            Cancelar
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            disabled={isSimulating}
+                                            className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md text-sm font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {isSimulating ? 'Simulando...' : 'Simular'}
+                                        </button>
+                                    </div>
+                                </form>
+                            ) : (
+                                <div className="space-y-4">
+                                    {simulationResult && (
+                                        <>
+                                            <div className="bg-green-50 border border-green-200 rounded-md p-4">
+                                                <div className="flex">
+                                                    <div className="flex-shrink-0">
+                                                        <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                                        </svg>
+                                                    </div>
+                                                    <div className="ml-3">
+                                                        <h3 className="text-sm font-medium text-green-800">
+                                                            {simulationResult.message}
+                                                        </h3>
+                                                        <p className="mt-1 text-sm text-green-700">
+                                                            Lead ID: {simulationResult.lead_id}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="bg-gray-50 rounded-md p-4">
+                                                <h4 className="text-sm font-medium text-gray-900 mb-3">Dados do Lead Simulado:</h4>
+                                                <div className="grid grid-cols-2 gap-4 text-sm">
+                                                    <div>
+                                                        <span className="font-medium text-gray-700">CNPJ:</span>
+                                                        <p className="text-gray-900">{simulationResult.data.cnpj}</p>
+                                                    </div>
+                                                    <div>
+                                                        <span className="font-medium text-gray-700">Empresa:</span>
+                                                        <p className="text-gray-900">{simulationResult.data.nome_empresa}</p>
+                                                    </div>
+                                                    <div>
+                                                        <span className="font-medium text-gray-700">Segmento:</span>
+                                                        <p className="text-gray-900">{simulationResult.data.segmento}</p>
+                                                    </div>
+                                                    <div>
+                                                        <span className="font-medium text-gray-700">Capital Social:</span>
+                                                        <p className="text-gray-900">{formatCurrency(simulationResult.data.capital_social)}</p>
+                                                    </div>
+                                                    <div>
+                                                        <span className="font-medium text-gray-700">Email:</span>
+                                                        <p className="text-gray-900">{simulationResult.data.email}</p>
+                                                    </div>
+                                                    <div>
+                                                        <span className="font-medium text-gray-700">Produto:</span>
+                                                        <p className="text-gray-900">{simulationResult.data.produto}</p>
+                                                    </div>
+                                                    <div>
+                                                        <span className="font-medium text-gray-700">Valor Contrato:</span>
+                                                        <p className="text-gray-900">{formatCurrency(simulationResult.data.valor_contrato)}</p>
+                                                    </div>
+                                                    <div className="col-span-2">
+                                                        <span className="font-medium text-gray-700">Cluster:</span>
+                                                        <p className="text-purple-600 font-semibold text-lg">{simulationResult.data.cluster_name}</p>
+                                                    </div>
+                                                    <div className="col-span-2">
+                                                        <span className="font-medium text-gray-700">Data Simulação:</span>
+                                                        <p className="text-gray-900">{formatDate(simulationResult.data.data_simulacao)}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
+
+                                    <div className="flex space-x-3 pt-4">
+                                        <button
+                                            type="button"
+                                            onClick={handleNewSimulation}
+                                            className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                                        >
+                                            Nova Simulação
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={handleCloseModal}
+                                            className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md text-sm font-medium hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                                        >
+                                            Fechar
+                                        </button>
+                                    </div>
                                 </div>
-                            </form>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Snackbar */}
+            {snackbar.show && (
+                <div className="fixed bottom-4 right-4 z-50">
+                    <div className={`rounded-md p-4 shadow-lg ${snackbar.type === 'error'
+                        ? 'bg-red-50 border border-red-200'
+                        : 'bg-green-50 border border-green-200'
+                        }`}>
+                        <div className="flex">
+                            <div className="flex-shrink-0">
+                                {snackbar.type === 'error' ? (
+                                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                    </svg>
+                                ) : (
+                                    <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                    </svg>
+                                )}
+                            </div>
+                            <div className="ml-3">
+                                <p className={`text-sm font-medium ${snackbar.type === 'error' ? 'text-red-800' : 'text-green-800'
+                                    }`}>
+                                    {snackbar.message}
+                                </p>
+                            </div>
+                            <div className="ml-auto pl-3">
+                                <button
+                                    onClick={() => setSnackbar(prev => ({ ...prev, show: false }))}
+                                    className={`inline-flex rounded-md p-1.5 ${snackbar.type === 'error'
+                                        ? 'text-red-500 hover:bg-red-100'
+                                        : 'text-green-500 hover:bg-green-100'
+                                        }`}
+                                >
+                                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
