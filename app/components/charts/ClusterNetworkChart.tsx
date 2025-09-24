@@ -9,6 +9,8 @@ interface Cluster {
     x: number;
     y: number;
     description: string;
+    comportamento: string;
+    acoes: string[];
     metrics: {
         totalClients: number;
         avgTicket: string;
@@ -19,7 +21,7 @@ interface Cluster {
         mediaNps: number;
         qtdAvaliacoesNps: number;
         qtdContratos: number;
-        valorTotalContratado: number;
+        valorTotalContratado: string;
         mediaDiasResolucaoTicket: number;
     };
     keywords: string[];
@@ -275,7 +277,7 @@ export default function ClusterNetworkChart({ clusters, onClusterClick, selected
                             </svg>
                         </button>
                     </div>
-                    <p className="text-gray-600 mt-2 text-sm">{selectedCluster?.description}</p>
+                    <p className="text-gray-600 mt-2 text-sm">{selectedCluster?.comportamento}</p>
                 </div>
 
                 {/* Content */}
@@ -304,43 +306,30 @@ export default function ClusterNetworkChart({ clusters, onClusterClick, selected
                     <div className="mb-6">
                         <h3 className="text-lg font-semibold text-gray-800 mb-4">Ações Estratégicas Recomendadas</h3>
                         <div className="space-y-3">
-                            <div className="flex items-start p-3 bg-blue-50 rounded-lg">
-                                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                                <p className="text-sm text-gray-700">
-                                    Programa de fidelidade com cashback ou pontos extras para clientes frequentes
-                                </p>
-                            </div>
-                            <div className="flex items-start p-3 bg-green-50 rounded-lg">
-                                <div className="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                                <p className="text-sm text-gray-700">
-                                    Ofertas exclusivas de pré-lançamento de produtos
-                                </p>
-                            </div>
-                            <div className="flex items-start p-3 bg-purple-50 rounded-lg">
-                                <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                                <p className="text-sm text-gray-700">
-                                    Convite para eventos VIP ou experiências personalizadas
-                                </p>
-                            </div>
-                            <div className="flex items-start p-3 bg-orange-50 rounded-lg">
-                                <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-                                <p className="text-sm text-gray-700">
-                                    Envio de cupons personalizados baseados no histórico de compras
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                            {selectedCluster?.acoes && selectedCluster.acoes.length > 0 ? (
+                                selectedCluster.acoes.map((acao, index) => {
+                                    const colors = ['bg-blue-50', 'bg-green-50', 'bg-purple-50', 'bg-orange-50', 'bg-pink-50', 'bg-indigo-50'];
+                                    const dotColors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-orange-500', 'bg-pink-500', 'bg-indigo-500'];
+                                    const colorClass = colors[index % colors.length];
+                                    const dotColorClass = dotColors[index % dotColors.length];
 
-                    {/* Comportamento do Cluster */}
-                    <div>
-                        <h3 className="text-lg font-semibold text-gray-800 mb-4">Análise Comportamental</h3>
-                        <div className="bg-gray-50 rounded-lg p-4">
-                            <p className="text-sm text-gray-700 leading-relaxed">
-                                Este cluster representa um grupo de clientes com características similares de consumo.
-                                Eles demonstram um padrão consistente de compras e respondem bem a ofertas direcionadas.
-                                A estratégia de marketing deve focar em personalização e criação de experiências únicas
-                                para maximizar o valor do cliente ao longo do tempo.
-                            </p>
+                                    return (
+                                        <div key={index} className={`flex items-start p-3 ${colorClass} rounded-lg`}>
+                                            <div className={`w-2 h-2 ${dotColorClass} rounded-full mt-2 mr-3 flex-shrink-0`} />
+                                            <p className="text-sm text-gray-700">
+                                                {acao}
+                                            </p>
+                                        </div>
+                                    );
+                                })
+                            ) : (
+                                <div className="flex items-start p-3 bg-gray-50 rounded-lg">
+                                    <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 mr-3 flex-shrink-0" />
+                                    <p className="text-sm text-gray-500">
+                                        Nenhuma ação estratégica disponível para este cluster
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

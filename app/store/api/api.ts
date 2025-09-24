@@ -34,6 +34,7 @@ export interface ClusterApiResponse {
     clusters: {
         cluster_id: number;
         descricao: string;
+        comportamento: string;
         total_tickets_abertos: number;
         total_desconto_concedido: number;
         media_nps: number;
@@ -42,7 +43,9 @@ export interface ClusterApiResponse {
         valor_total_contratado: number;
         media_dias_resolucao_ticket: number;
         n_clients: number;
-        acoes: any[];
+        acoes: {
+            acao: string;
+        }[];
     }[];
 }
 

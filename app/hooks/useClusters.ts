@@ -9,6 +9,8 @@ export interface ClusterUI {
     x: number;
     y: number;
     description: string;
+    comportamento: string;
+    acoes: string[];
     metrics: {
         totalClients: number;
         avgTicket: string;
@@ -19,7 +21,7 @@ export interface ClusterUI {
         mediaNps: number;
         qtdAvaliacoesNps: number;
         qtdContratos: number;
-        valorTotalContratado: number;
+        valorTotalContratado: string;
         mediaDiasResolucaoTicket: number;
     };
     keywords: string[];
@@ -130,6 +132,8 @@ export const useClusters = () => {
         x: 0, // Será calculado pelo gráfico
         y: 0, // Será calculado pelo gráfico
         description: cluster.descricao,
+        comportamento: cluster.comportamento || "Análise comportamental não disponível",
+        acoes: cluster.acoes?.map(acao => acao.acao) || [],
         metrics: {
             totalClients: cluster.n_clients,
             avgTicket: calculateAvgTicket(cluster.valor_total_contratado, cluster.qtd_contratos),
