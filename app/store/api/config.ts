@@ -1,7 +1,7 @@
 // Configurações da API
 
 export const API_CONFIG = {
-    baseUrl: 'http://localhost:8010/',
+    baseUrl: 'https://weedle-gja8huezc8fwf2gg.eastus2-01.azurewebsites.net/',
     timeout: 30000, // 30 segundos
     retries: 3,
     headers: {
