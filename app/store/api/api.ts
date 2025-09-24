@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { API_CONFIG, CACHE_TAGS } from './config';
+import type { LeadsResponse } from './types';
 
 // Tipos base para as entidades
 export interface Company {
@@ -114,6 +115,11 @@ export const api = createApi({
             query: () => '/clusters',
             providesTags: [CACHE_TAGS.Dashboard],
         }),
+
+        getLeads: builder.query<LeadsResponse, void>({
+            query: () => '/leads',
+            providesTags: [CACHE_TAGS.Dashboard],
+        }),
     }),
 });
 
@@ -125,4 +131,5 @@ export const {
     useGetNpsQuery,
     useGetTempoMedioResolucaoQuery,
     useGetClustersQuery,
+    useGetLeadsQuery,
 } = api;

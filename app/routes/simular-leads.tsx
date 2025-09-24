@@ -1,6 +1,9 @@
 import type { Route } from "./+types/simular-leads";
 import { useState } from "react";
 import DataTable from "~/components/DataTable";
+import { useGetLeadsQuery } from "~/store/api/api";
+import type { SimulatedLead } from "~/store/api/types";
+import { ClientStatsSkeleton, ClientTableSkeleton } from "~/components/ClientSkeleton";
 
 export function meta({ }: Route.MetaArgs) {
     return [
@@ -9,31 +12,21 @@ export function meta({ }: Route.MetaArgs) {
     ];
 }
 
-interface SimulatedLead {
-    id: string;
-    cnpj: string;
-    companyName: string;
-    segment: string;
-    capital: number;
-    email: string;
-    product: string;
-    contractValue: number;
-    cluster: string;
-    simulationDate: string;
-    simulationTime: string;
+// Interface local para dados formatados da tabela
+interface FormattedLead extends SimulatedLead {
+    capitalFormatted: string;
+    contractValueFormatted: string;
+    simulationDateFormatted: string;
 }
 
 export default function SimularLeads() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // Dados mockados para demonstração
-    const simulatedLeads: SimulatedLead[] = [
-        { id: "1", cnpj: "12.345.678/0001-90", companyName: "TechCorp Solutions", segment: "Tecnologia", capital: 500000, email: "contato@techcorp.com", product: "ERP Cloud", contractValue: 45000, cluster: "Tecnologia", simulationDate: "2024-01-15", simulationTime: "14:30" },
-        { id: "2", cnpj: "98.765.432/0001-10", companyName: "Hospital São Lucas", segment: "Saúde", capital: 800000, email: "admin@hospitalsaolucas.com", product: "TOTVS Saúde", contractValue: 32000, cluster: "Saúde", simulationDate: "2024-01-14", simulationTime: "09:15" },
-    ];
+    // Buscar dados da API
+    const { data: leadsData, isLoading, error } = useGetLeadsQuery();
 
-    const totalSimulated = simulatedLeads.length;
-    const totalConverted = simulatedLeads.filter(lead => lead.churnRisk < 0.15).length;
+    const simulatedLeads = leadsData?.leads || [];
+    const totalSimulated = leadsData?.total || 0;
     const modelAccuracy = 96.2;
 
     const formatCurrency = (value: number) => {
@@ -47,31 +40,79 @@ export default function SimularLeads() {
         return `${(value * 100).toFixed(1)}%`;
     };
 
-    const formatDate = (dateString: string, timeString: string) => {
-        const date = new Date(dateString).toLocaleDateString('pt-BR');
-        return `${date} - ${timeString}`;
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
     };
 
     // Preparar dados para o DataTable
-    const tableData = simulatedLeads.map(lead => ({
+    const tableData: FormattedLead[] = simulatedLeads.map(lead => ({
         ...lead,
-        capitalFormatted: formatCurrency(lead.capital),
-        contractValueFormatted: formatCurrency(lead.contractValue),
-        simulationDateFormatted: formatDate(lead.simulationDate, lead.simulationTime),
+        capitalFormatted: formatCurrency(lead.capital_social),
+        contractValueFormatted: formatCurrency(lead.valor_contrato),
+        simulationDateFormatted: formatDate(lead.data_simulacao),
     }));
 
     // Definir colunas para o DataTable
     const columns = [
-        { key: 'cnpj' as keyof typeof tableData[0], label: 'CNPJ', sortable: true },
-        { key: 'companyName' as keyof typeof tableData[0], label: 'Nome Empresa', sortable: true },
-        { key: 'segment' as keyof typeof tableData[0], label: 'Segmento', sortable: true },
-        { key: 'capitalFormatted' as keyof typeof tableData[0], label: 'Capital Social', sortable: true },
-        { key: 'email' as keyof typeof tableData[0], label: 'Email', sortable: true },
-        { key: 'product' as keyof typeof tableData[0], label: 'Produto', sortable: true },
-        { key: 'contractValueFormatted' as keyof typeof tableData[0], label: 'Valor Contrato', sortable: true },
-        { key: 'cluster' as keyof typeof tableData[0], label: 'Cluster', sortable: true },
-        { key: 'simulationDateFormatted' as keyof typeof tableData[0], label: 'Data Simulação', sortable: true },
+        { key: 'cnpj' as keyof FormattedLead, label: 'CNPJ', sortable: true },
+        { key: 'nome_empresa' as keyof FormattedLead, label: 'Nome Empresa', sortable: true },
+        { key: 'segmento' as keyof FormattedLead, label: 'Segmento', sortable: true },
+        { key: 'capitalFormatted' as keyof FormattedLead, label: 'Capital Social', sortable: true },
+        { key: 'email' as keyof FormattedLead, label: 'Email', sortable: true },
+        { key: 'produto' as keyof FormattedLead, label: 'Produto', sortable: true },
+        { key: 'contractValueFormatted' as keyof FormattedLead, label: 'Valor Contrato', sortable: true },
+        { key: 'cluster_name' as keyof FormattedLead, label: 'Cluster', sortable: true },
+        { key: 'simulationDateFormatted' as keyof FormattedLead, label: 'Data Simulação', sortable: true },
     ];
+
+    // Tratamento de loading e erro
+    if (isLoading) {
+        return (
+            <div className="p-8 space-y-6">
+                {/* Header */}
+                <div className="border-b border-gray-200 pb-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-900">Simular Leads</h1>
+                            <p className="mt-1 text-sm text-gray-500">
+                                Simule diferentes cenários de leads para otimizar seus clusters
+                            </p>
+                        </div>
+                        <div className="bg-gray-200 rounded-lg px-4 py-3 animate-pulse">
+                            <div className="h-4 w-32 bg-gray-300 rounded"></div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Cards de informações com skeleton */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <ClientStatsSkeleton />
+                    <ClientStatsSkeleton />
+                </div>
+
+                {/* Tabela com skeleton */}
+                <ClientTableSkeleton />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="p-8 space-y-6">
+                <div className="flex items-center justify-center h-64">
+                    <div className="text-center">
+                        <div className="text-red-500 text-6xl mb-4">⚠️</div>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">Erro ao carregar dados</h3>
+                        <p className="text-gray-600">Não foi possível carregar os leads simulados. Tente novamente mais tarde.</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="p-8 space-y-6">

@@ -123,3 +123,28 @@ export interface ApiLog {
     response?: any;
     error?: any;
 }
+
+// Tipos para leads simulados
+export interface SimulatedLead {
+    cnpj: string;
+    nome_empresa: string;
+    segmento: string;
+    capital_social: number;
+    email: string;
+    produto: string;
+    valor_contrato: number;
+    cluster_name: string;
+    data_simulacao: string;
+}
+
+export interface LeadsResponse {
+    leads: SimulatedLead[];
+    total: number;
+    limit: number | null;
+    offset: number;
+    filtros: {
+        segmento: string | null;
+        cluster_name: string | null;
+        produto: string | null;
+    };
+}
