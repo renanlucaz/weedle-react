@@ -1,27 +1,6 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { API_CONFIG, CACHE_TAGS } from './config';
-import type { LeadsResponse, SimulateLeadRequest, SimulateLeadResponse } from './types';
-
-// Tipos base para as entidades
-export interface Company {
-    id: string;
-    cnpj: string;
-    nomeEmpresa: string;
-    segmento: string;
-    capitalSocial: number;
-    email: string;
-    produto: string;
-    valorContrato: number;
-    cluster: string;
-    dataSimulacao: string;
-}
-
-export interface Cluster {
-    id: string;
-    nome: string;
-    descricao?: string;
-    empresas: Company[];
-}
+import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
+import { API_CONFIG, CACHE_TAGS, ERROR_CONFIG, ENDPOINT_RETRY_CONFIG } from './config';
+import type { LeadsResponse, SimulateLeadRequest, SimulateLeadResponse, Company, Cluster } from './types';
 
 export interface DashboardData {
     totalEmpresas: number;
@@ -50,9 +29,9 @@ export interface ClusterApiResponse {
     }[];
 }
 
-export const api = createApi({
-    reducerPath: 'api',
-    baseQuery: fetchBaseQuery({
+// Base query com retry personalizado
+const baseQueryWithRetry = retry(
+    fetchBaseQuery({
         baseUrl: API_CONFIG.baseUrl,
         timeout: API_CONFIG.timeout,
         prepareHeaders: (headers) => {
@@ -62,6 +41,25 @@ export const api = createApi({
             return headers;
         },
     }),
+    {
+        maxRetries: ERROR_CONFIG.maxRetries,
+        backoff: async (attempt: number, maxRetries: number) => {
+            // Delay exponencial: 1s, 2s, 4s...
+            const delay = ERROR_CONFIG.retryDelay * Math.pow(2, attempt - 1);
+
+            // Log para debug (apenas em desenvolvimento)
+            if (process.env.NODE_ENV === 'development') {
+                console.log(`🔄 Tentativa ${attempt}/${maxRetries} falhou, tentando novamente em ${delay}ms...`);
+            }
+
+            await new Promise(resolve => setTimeout(resolve, delay));
+        },
+    }
+);
+
+export const api = createApi({
+    reducerPath: 'api',
+    baseQuery: baseQueryWithRetry,
     tagTypes: Object.values(CACHE_TAGS),
     endpoints: (builder) => ({
         getLtvMedio: builder.query<{ valor: number }, string>({

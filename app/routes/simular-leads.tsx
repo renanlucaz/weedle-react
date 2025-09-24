@@ -26,10 +26,10 @@ export default function SimularLeads() {
         cnpj: '',
         nome_empresa: '',
         segmento: '',
-        capital_social: 0,
+        capital_social: null,
         email: '',
         produto: '',
-        valor_contrato: 0,
+        valor_contrato: null,
     });
     const [simulationResult, setSimulationResult] = useState<SimulateLeadResponse | null>(null);
     const [snackbar, setSnackbar] = useState<{ show: boolean; message: string; type: 'error' | 'success' }>({
@@ -66,7 +66,7 @@ export default function SimularLeads() {
     };
 
     // Funções para lidar com o formulário
-    const handleInputChange = (field: keyof SimulateLeadRequest, value: string | number) => {
+    const handleInputChange = (field: keyof SimulateLeadRequest, value: string | number | null) => {
         setFormData(prev => ({
             ...prev,
             [field]: value
@@ -76,8 +76,25 @@ export default function SimularLeads() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        // Validar se os campos numéricos obrigatórios foram preenchidos
+        if (formData.capital_social === null || formData.valor_contrato === null) {
+            setSnackbar({
+                show: true,
+                message: 'Por favor, preencha todos os campos obrigatórios.',
+                type: 'error'
+            });
+            return;
+        }
+
         try {
-            const result = await simulateLead(formData).unwrap();
+            // Preparar dados para envio, convertendo null para 0 se necessário
+            const dataToSend = {
+                ...formData,
+                capital_social: formData.capital_social || 0,
+                valor_contrato: formData.valor_contrato || 0,
+            };
+
+            const result = await simulateLead(dataToSend).unwrap();
             setSimulationResult(result);
             setCurrentTab('result');
             setSnackbar({
@@ -101,10 +118,10 @@ export default function SimularLeads() {
             cnpj: '',
             nome_empresa: '',
             segmento: '',
-            capital_social: 0,
+            capital_social: null,
             email: '',
             produto: '',
-            valor_contrato: 0,
+            valor_contrato: null,
         });
         setSimulationResult(null);
     };
@@ -318,8 +335,8 @@ export default function SimularLeads() {
                                             <input
                                                 type="number"
                                                 required
-                                                value={formData.capital_social}
-                                                onChange={(e) => handleInputChange('capital_social', Number(e.target.value))}
+                                                value={formData.capital_social || ''}
+                                                onChange={(e) => handleInputChange('capital_social', e.target.value ? Number(e.target.value) : null)}
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-700"
                                             />
                                         </div>
@@ -330,8 +347,8 @@ export default function SimularLeads() {
                                             <input
                                                 type="number"
                                                 required
-                                                value={formData.valor_contrato}
-                                                onChange={(e) => handleInputChange('valor_contrato', Number(e.target.value))}
+                                                value={formData.valor_contrato || ''}
+                                                onChange={(e) => handleInputChange('valor_contrato', e.target.value ? Number(e.target.value) : null)}
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-700"
                                             />
                                         </div>

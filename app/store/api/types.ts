@@ -86,6 +86,27 @@ export interface ReportData {
     };
 }
 
+// Tipos base para as entidades
+export interface Company {
+    id: string;
+    cnpj: string;
+    nomeEmpresa: string;
+    segmento: string;
+    capitalSocial: number;
+    email: string;
+    produto: string;
+    valorContrato: number;
+    cluster: string;
+    dataSimulacao: string;
+}
+
+export interface Cluster {
+    id: string;
+    nome: string;
+    descricao?: string;
+    empresas: Company[];
+}
+
 // Tipos para configurações da API
 export interface ApiConfig {
     baseUrl: string;
@@ -154,10 +175,10 @@ export interface SimulateLeadRequest {
     cnpj: string;
     nome_empresa: string;
     segmento: string;
-    capital_social: number;
+    capital_social: number | null;
     email: string;
     produto: string;
-    valor_contrato: number;
+    valor_contrato: number | null;
 }
 
 export interface SimulateLeadResponse {

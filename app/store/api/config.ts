@@ -76,8 +76,34 @@ export const DEV_CONFIG = {
 // Configurações de erro
 export const ERROR_CONFIG = {
     retryDelay: 1000, // 1 segundo
-    maxRetries: 3,
+    maxRetries: 3, // 3 tentativas adicionais (total de 4 tentativas)
     timeoutMessage: 'Request timeout. Please try again.',
     networkErrorMessage: 'Network error. Please check your connection.',
     serverErrorMessage: 'Server error. Please try again later.',
+    // Status codes que devem ser retentados
+    retryableStatusCodes: [408, 429, 500, 502, 503, 504],
+    // Status codes que NÃO devem ser retentados
+    nonRetryableStatusCodes: [400, 401, 403, 404, 422],
+} as const;
+
+// Configurações específicas por endpoint
+export const ENDPOINT_RETRY_CONFIG = {
+    // Endpoints críticos que precisam de mais tentativas
+    critical: {
+        endpoints: ['/clusters', '/leads', '/dashboard'],
+        maxRetries: 5,
+        retryDelay: 2000, // 2 segundos
+    },
+    // Endpoints normais
+    normal: {
+        endpoints: ['/empresas', '/reports'],
+        maxRetries: 3,
+        retryDelay: 1000, // 1 segundo
+    },
+    // Endpoints que não precisam de muitas tentativas
+    light: {
+        endpoints: ['/simular-leads'],
+        maxRetries: 2,
+        retryDelay: 500, // 0.5 segundos
+    },
 } as const;
