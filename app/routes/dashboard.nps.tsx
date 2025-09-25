@@ -321,20 +321,6 @@ export default function DashboardNPS() {
                     </>
                 )}
             </div>
-
-            {/* Tabela Analítico NPS */}
-            {isLoading ? (
-                <ClientTableSkeleton />
-            ) : (
-                <DataTable
-                    data={dadosAnaliticoNPS}
-                    columns={colunasAnaliticoNPS}
-                    title="NPS por cliente"
-                    searchPlaceholder="Pesquisar clientes..."
-                    itemsPerPage={10}
-                    height="500px"
-                />
-            )}
         </div>
     );
 }

@@ -285,22 +285,6 @@ export default function DashboardClientes() {
                     </>
                 )}
             </div>
-
-            {/* Tabela de Clientes */}
-            <div className="mt-6 mb-6">
-                {isLoading ? (
-                    <ClientTableSkeleton />
-                ) : (
-                    <DataTable
-                        data={clientesData}
-                        columns={clientesColumns}
-                        title="Lista de clientes"
-                        searchPlaceholder="Pesquisar clientes..."
-                        itemsPerPage={10}
-                        height="500px"
-                    />
-                )}
-            </div>
         </div>
     );
 }

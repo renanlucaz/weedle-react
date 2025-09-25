@@ -348,22 +348,6 @@ export default function DashboardContratos() {
                     </>
                 )}
             </div>
-
-            {/* Tabela de Contratos */}
-            <div className="mt-6">
-                {isLoading ? (
-                    <ClientTableSkeleton />
-                ) : (
-                    <DataTable
-                        data={dadosContratos}
-                        columns={colunasContratos}
-                        title="Detalhamento de Contratos"
-                        searchPlaceholder="Pesquisar contratos..."
-                        itemsPerPage={10}
-                        height="500px"
-                    />
-                )}
-            </div>
         </div>
     );
 }

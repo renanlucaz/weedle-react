@@ -19,11 +19,11 @@ export default function Dashboard() {
     // Cluster options (including "all" for all clusters)
     const clusterOptions = [
         { id: "all", name: "Filtrar por cluster", color: "bg-gray-100 text-gray-800" },
-        { id: "0", name: "Cluster 0 - Clientes Campeões", color: "bg-green-100 text-green-800" },
-        { id: "1", name: "Cluster 1 - Clientes Satisfeitos", color: "bg-blue-100 text-blue-800" },
-        { id: "2", name: "Cluster 2 - Clientes em Risco", color: "bg-yellow-100 text-yellow-800" },
-        { id: "3", name: "Cluster 3 - Clientes Críticos", color: "bg-red-100 text-red-800" },
-        { id: "4", name: "Cluster 4 - Clientes Roubados", color: "bg-red-100 text-red-800" },
+        { id: "0", name: "Cluster 0 - Engajamento Moderado", color: "bg-green-100 text-green-800" },
+        { id: "1", name: "Cluster 1 - Clientes Inativos", color: "bg-blue-100 text-blue-800" },
+        { id: "2", name: "Cluster 2 - Clientes Premium", color: "bg-yellow-100 text-yellow-800" },
+        { id: "3", name: "Cluster 3 - Clientes Neutros", color: "bg-red-100 text-red-800" },
+        { id: "4", name: "Cluster 4 - Clientes Críticos", color: "bg-red-100 text-red-800" },
     ];
 
 
