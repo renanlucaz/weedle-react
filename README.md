@@ -1,4 +1,4 @@
-# Weedle - Sistema de Gestão de Leads
+# Weedle - Sistema de segmentação de clientes
 
 O Weedle é uma aplicação web moderna e inteligente para segmentação de clientes e gestão de leads, desenvolvida com tecnologias de ponta. O sistema oferece uma plataforma completa para análise de dados, simulação de cenários e tomada de decisões estratégicas baseadas em clusters de clientes.
 
